@@ -2,3 +2,7 @@ node_modules/
 .DS_Store
 .idea/
 *.swp
+
+# atom
+build/atom-shell
+build/node_modules
