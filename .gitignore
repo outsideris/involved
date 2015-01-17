@@ -6,3 +6,4 @@ node_modules/
 # atom
 build/atom-shell
 build/node_modules
+*.css
