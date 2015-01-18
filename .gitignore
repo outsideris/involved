@@ -7,3 +7,4 @@ node_modules/
 build/atom-shell
 build/node_modules
 *.css
+components/
