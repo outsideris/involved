@@ -6,7 +6,10 @@
   </head>
   <body class="flex-container flex-container-row" ng-controller="TimelineCtrl">
     <nav class="menus">
-
+      <div class="profile">
+        <img ng-src="{{me.avatar_url}}" class="avatar me">
+        <span>{{me.login}}</span>
+      </div>
     </nav>
     <section class="main-contents flex-container flex-container-row">
       <div class="timeline flex-container flex-container-col">
