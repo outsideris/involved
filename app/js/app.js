@@ -11,14 +11,28 @@
   // controllers
   angular.module('involved')
     .controller('TimelineCtrl', function($scope, github) {
-
+      $scope.watch = {
+        projects: [
+          {owner: 'Automattic', repo: 'socket.io'},
+          {owner: 'bower', repo: 'bower'}
+        ]
+      };
+      console.log($scope.watch.projects[0].owner)
+      github.repoEvent()
+        .query({
+          owner: $scope.watch.projects[0].owner,
+          repo: $scope.watch.projects[0].repo
+        }, function(events, getResponseHeaders) {
+          console.log(events);
+          $scope.timeline = events;
+        });
     });
 
   // services
   angular.module('involved')
     .factory('github', function($resource) {
       var githubHost = 'https://api.github.com';
-      var token = 'b4e796e89482217563b3f85b687039c6d7b78c08';
+      var token = '';
       return {
         user: function() {
           return $resource(githubHost + '/user', {
