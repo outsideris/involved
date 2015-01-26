@@ -13,17 +13,20 @@
     .controller('TimelineCtrl', function($scope, github) {
       $scope.watch = {
         projects: [
+          {owner: 'summernote', repo: 'summernote'},
           {owner: 'Automattic', repo: 'socket.io'},
           {owner: 'bower', repo: 'bower'}
         ]
       };
-      console.log($scope.watch.projects[0].owner)
+
       github.repoEvent()
         .query({
           owner: $scope.watch.projects[0].owner,
           repo: $scope.watch.projects[0].repo
         }, function(events, getResponseHeaders) {
-          console.log(events);
+          events = _.filter(events, function(e) {
+            return e.type !== 'ForkEvent' && e.type !== 'WatchEvent';
+          });
           $scope.timeline = events;
         });
     });
@@ -36,6 +39,11 @@
       return {
         user: function() {
           return $resource(githubHost + '/user', {
+            access_token: token
+          });
+        },
+        repoEvent: function() {
+          return $resource(githubHost + '/repos/:owner/:repo/events', {
             access_token: token
           });
         }

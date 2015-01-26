@@ -13,33 +13,44 @@
     </nav>
     <section class="main-contents flex-container flex-container-row">
       <div class="timeline">
-        <div class="timeline-cell">
-          anarcher created repository litterbin/golang-go
-          26 minutes ago
-        </div>
-        <div class="timeline-cell">
-          anarcher starred pelletier/go-toml
-          29 minutes ago
-        </div>
-        <div class="timeline-cell">
-          equolo added WebReflection to equolo/equolo.org
-          an hour ago
-        </div>
-        <div class="timeline-cell">
-          sindresorhus created repository sindresorhus/win-release
-          2 hours ago
-        </div>
-        <div class="timeline-cell">
-          hij1nx starred substack/html-template
-          2 hours ago
-        </div>
-        <div class="timeline-cell">
-          dgkim84 starred cfregly/fluxcapacitor
-          2 hours ago
-        </div>
-        <div class="timeline-cell">
-          sindresorhus created repository sindresorhus/has-dom
-          2 hours ago
+        <div class="timeline-cell" ng-repeat="t in timeline">
+          <a href="{{t.actor.url}}">{{t.actor.login}}</a>
+          <ng-switch on="t.type">
+              <span ng-switch-when="CreateEvent">
+                created {{t.payload.ref_type}} {{t.payload.ref}}
+              </span>
+              <span ng-switch-when="IssuesEvent">
+                {{t.payload.action}} issue #{{t.payload.issue.number}}
+              </span>
+              <span ng-switch-when="IssueCommentEvent">
+                commented on issue #{{t.payload.issue.number}}-comment{{t.payload.comment.id}}
+              </span>
+              <span ng-switch-when="PushEvent">
+                pushed to {{t.payload.ref}}
+              </span>
+              <span ng-switch-when="PullRequestEvent">
+                {{t.payload.action}} pull request
+                #{{t.payload.pull_request.number}}
+              </span>
+              <span ng-switch-when="CommitCommentEvent">
+                commented on commit at
+                @{{t.payload.comment.commit_id}}-comment{{t.payload.comment.id}}
+              </span>
+              <span ng-switch-when="PullRequestReviewCommentEvent">
+                commented on pull request
+                #{{t.payload.pull_request.number}}-comment{{t.payload.comment.id}}
+              </span>
+              <span ng-switch-when="ReleaseEvent">
+                released {{t.payload.release.name}}/{{t.payload.release.tag_name}}
+              </span>
+              <span ng-switch-when="DeleteEvent">
+                deleted {{t.payload.ref_type}} {{t.payload.ref}}
+              </span>
+              <span ng-switch-default>
+                {{t.type}} - {{t.payload.action}}
+              </span>
+          </ng-switch>
+          at {{t.repo.name}} - {{t.created_at}}
         </div>
       </div>
       <div class="detail"></div>
