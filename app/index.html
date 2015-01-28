@@ -14,6 +14,7 @@
     <section class="main-contents flex-container flex-container-row">
       <div class="timeline">
         <div class="timeline-cell" ng-repeat="t in timeline">
+          <img ng-src="{{t.actor.avatar_url}}" class="avatar">
           <a href="{{t.actor.url}}">{{t.actor.login}}</a>
           <ng-switch on="t.type">
               <span ng-switch-when="CreateEvent">
