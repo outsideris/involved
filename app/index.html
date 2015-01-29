@@ -15,6 +15,7 @@
       <div class="timeline">
         <div class="timeline-cell" ng-repeat="t in timeline">
           <img ng-src="{{t.actor.avatar_url}}" class="avatar">
+          <time>{{t.created_at | fromNow}}</time>
           <a href="{{t.actor.url}}" class="username">{{t.actor.login}}</a>
           <ng-switch on="t.type">
               <span ng-switch-when="CreateEvent">
@@ -51,11 +52,10 @@
                 {{t.type}} - {{t.payload.action}}
               </span>
           </ng-switch>
-          at {{t.repo.name}} - {{t.created_at}}
+          <div class="repo">- {{t.repo.name}}</div>
         </div>
       </div>
       <div class="detail"></div>
-
     </section>
 
     <script src="./js/init.js"></script>

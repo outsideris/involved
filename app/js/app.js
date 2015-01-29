@@ -49,4 +49,10 @@
         }
       };
     });
+
+  // filters
+  angular.module('involved')
+    .filter('fromNow', function() {
+      return function(date) { return moment(date).fromNow(); }
+    });
 })();
