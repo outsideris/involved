@@ -43,7 +43,9 @@
                 to {{t.payload.ref | removeRef}}
               </span>
               <span ng-switch-when="PullRequestEvent">
-                {{t.payload.action}} pull request #{{t.payload.pull_request.number}}
+                <span ng-if="t.payload.pull_request.merged">merged</span>
+                <span ng-if="!t.payload.pull_request.merged">{{t.payload.action}}</span>
+                pull request #{{t.payload.pull_request.number}}
                 <div class="title">"{{t.payload.pull_request.title}}"</div>
               </span>
               <span ng-switch-when="CommitCommentEvent">
