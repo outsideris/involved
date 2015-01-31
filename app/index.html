@@ -16,7 +16,18 @@
       <div class="timeline">
         <div class="timeline-cell flex-container flex-container-row" ng-repeat="t in timeline">
           <div class="cell-type">
-            <span class="octicon octicon-microscope"></span>
+            <span class="octicon" ng-class="{
+                CreateEvent: 'octicon-git-branch',
+                IssueCommentEvent: 'octicon-comment-discussion', PushEvent: 'octicon-git-commit',
+                PullRequestEvent: 'octicon-git-pull-request', CommitCommentEvent: 'octicon-comment-discussion',
+                PullRequestReviewCommentEvent: 'octicon-comment-discussion', ReleaseEvent: 'octicon-tag',
+                DeleteEvent: 'octicon-trashcan'
+              }[t.type]"></span>
+            <span ng-if="t.type === 'IssuesEvent'" class="octicon" ng-class="{
+                opened: 'octicon-issue-opened',
+                closed: 'octicon-issue-closed',
+                reopened: 'octicon-issue-reopened'
+              }[t.payload.action]"></span>
           </div>
           <div class="cell-body">
             <div class="repo">{{t.repo.name}}</div>
