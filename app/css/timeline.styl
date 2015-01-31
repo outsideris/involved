@@ -1,27 +1,58 @@
 .timeline
   width timeline-width
   border-right 1px solid common-border-color
-  background-color timeline-background
+  background-color timeline-background-color
   overflow-y auto
   .timeline-cell
-    padding 10px 30px
     &:hover
       background-color #F2F2F2
-    .avatar
-      width 30px
-      height 30px
-      float left
-      margin-right 7px
-    .username
-      display block
-      margin-bottom 0px
-    .repo
-      text-align right
-      color default-sub-text-color
-    time
-      float right
-      font-size .8em
-      color default-sub-text-color
+    .cell-type
+      width 50px
+      position relative
+      .octicon
+        position absolute
+        top 10px
+        left 50%
+        margin-left -((timeline-icon-size + timeline-icon-border-width * 2) / 2)
+        width timeline-icon-size
+        height timeline-icon-size
+        line-height timeline-icon-size
+        border timeline-icon-border-width solid timeline-icon-border-color
+        border-radius 999px
+        color timeline-icon-color
+        display inline-block
+        text-align center
+        font-size 1.3em
+        z-index 10
+        background-color timeline-background-color
+      &:after
+        content ""
+        position absolute
+        z-index 1
+        top 0
+        bottom 0
+        left 50%
+        border-left timeline-icon-border-width solid timeline-icon-border-color
+    .cell-body
+      flex-grow 1
+      width (timeline-width - timeline-iconarea-width)
+      padding 10px 30px 10px 0
+      .avatar
+        width timeline-avatar-size
+        height timeline-avatar-size
+        float left
+        margin-right 7px
+      .username
+        display block
+        margin-bottom 0px
+      .repo
+        text-align right
+        color default-sub-text-color
+      time
+        float right
+        font-size .8em
+        color default-sub-text-color
+
 
 .detail
   flex-grow 1
