@@ -19,6 +19,7 @@
             <span class="octicon octicon-microscope"></span>
           </div>
           <div class="cell-body">
+            <div class="repo">{{t.repo.name}}</div>
             <img ng-src="{{t.actor.avatar_url}}" class="avatar">
             <time>{{t.created_at | fromNow}}</time>
             <a href="{{t.actor.url}}" class="username">{{t.actor.login}}</a>
@@ -65,7 +66,6 @@
                   {{t.type}} - {{t.payload.action}}
                 </span>
             </ng-switch>
-            <div class="repo">- {{t.repo.name}}</div>
           </div>
         </div>
       </div>
