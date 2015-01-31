@@ -54,5 +54,14 @@
   angular.module('involved')
     .filter('fromNow', function() {
       return function(date) { return moment(date).fromNow(); }
+    })
+    .filter('removeRef', function() {
+      return function(ref) { return ref.replace('refs/heads/', ''); }
+    })
+    .filter('shortSha', function() {
+      return function(sha, length) {
+        length = length || 7;
+        return sha ? sha.substr(0, length) : sha;
+      };
     });
 })();

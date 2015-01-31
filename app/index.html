@@ -19,31 +19,39 @@
           <a href="{{t.actor.url}}" class="username">{{t.actor.login}}</a>
           <ng-switch on="t.type">
               <span ng-switch-when="CreateEvent">
-                created {{t.payload.ref_type}} {{t.payload.ref}}
+                created {{t.payload.ref_type}}
+                <div class="title">"{{t.payload.ref}}"</div>
               </span>
               <span ng-switch-when="IssuesEvent">
                 {{t.payload.action}} issue #{{t.payload.issue.number}}
+                <div class="title">"{{t.payload.issue.title}}"</div>
               </span>
               <span ng-switch-when="IssueCommentEvent">
-                commented on issue #{{t.payload.issue.number}}-comment{{t.payload.comment.id}}
+                commented on issue #{{t.payload.issue.number}}
+                <div class="title">"{{t.payload.issue.title}}"</div>
               </span>
               <span ng-switch-when="PushEvent">
-                pushed to {{t.payload.ref}}
+                pushed {{t.payload.size}}
+                <span ng-if="t.payload.size > 1">commits</span>
+                <span ng-if="t.payload.size === 1">commit</span>
+                to {{t.payload.ref | removeRef}}
               </span>
               <span ng-switch-when="PullRequestEvent">
-                {{t.payload.action}} pull request
-                #{{t.payload.pull_request.number}}
+                {{t.payload.action}} pull request #{{t.payload.pull_request.number}}
+                <div class="title">"{{t.payload.pull_request.title}}"</div>
               </span>
               <span ng-switch-when="CommitCommentEvent">
-                commented on commit at
-                @{{t.payload.comment.commit_id}}-comment{{t.payload.comment.id}}
+                commented on commit
+                @{{t.payload.comment.commit_id | shortSha}}
               </span>
               <span ng-switch-when="PullRequestReviewCommentEvent">
                 commented on pull request
-                #{{t.payload.pull_request.number}}-comment{{t.payload.comment.id}}
+                #{{t.payload.pull_request.number}}
+                <div class="title">"{{t.payload.pull_request.title}}"</div>
               </span>
               <span ng-switch-when="ReleaseEvent">
-                released {{t.payload.release.name}}/{{t.payload.release.tag_name}}
+                {{t.payload.action}} {{t.payload.release.tag_name}}
+                <div class="title" ng-if="t.payload.release.name">"{{t.payload.release.name}}"</div>
               </span>
               <span ng-switch-when="DeleteEvent">
                 deleted {{t.payload.ref_type}} {{t.payload.ref}}
