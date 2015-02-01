@@ -34,30 +34,37 @@
         }
       };
     })
-    .factory('repo', function(github) {
+    .factory('repo', function($q, github) {
       var watched = {
         projects: [
+          {owner: 'summernote', repo: 'angular-summernote'},
+          {owner: 'strongloop', repo: 'express'},
           {owner: 'summernote', repo: 'summernote'},
           {owner: 'Automattic', repo: 'socket.io'},
+          {owner: 'bower', repo: 'bower'},
+          {owner: 'iojs', repo: 'io.js'},
+          {owner: 'outsideris', repo: 'slack-invite-automation'},
           {owner: 'bower', repo: 'bower'}
         ]
       };
 
       var getTimeline = function() {
-        return github.repoEvent()
-                .query({
-                  owner: watched.projects[0].owner,
-                  repo: watched.projects[0].repo
-                }).$promise.then(function(events, getResponseHeaders) {
-                  events = _.filter(events, function(e) {
-                    return e.type !== 'ForkEvent' && e.type !== 'WatchEvent';
-                  });
-                  return events;
-                });
+        var defer = $q.defer();
+        github.repoEvent()
+          .query({
+            owner: watched.projects[0].owner,
+            repo: watched.projects[0].repo
+          }, function(events, headers) {
+            events = _.filter(events, function(e) {
+              return e.type !== 'ForkEvent' && e.type !== 'WatchEvent';
+            });
+            defer.resolve(events);
+          });
+        return defer.promise;
       };
 
       return {
-        timeline: function() { return getTimeline(); }
+        timeline: getTimeline
       };
     });
 
