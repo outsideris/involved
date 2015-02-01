@@ -11,8 +11,8 @@
   // controllers
   angular.module('involved')
     .controller('TimelineCtrl', function($scope, repo) {
-      repo.timeline(function(events) {
-        $scope.timeline = events;
+      repo.timeline().then(function(events) {
+        $scope.timeline = events
       });
     });
 
@@ -43,23 +43,21 @@
         ]
       };
 
-      var getTimeline = function(cb) {
-        github.repoEvent()
-          .query({
-            owner: watched.projects[0].owner,
-            repo: watched.projects[0].repo
-          }, function(events, getResponseHeaders) {
-            events = _.filter(events, function(e) {
-              return e.type !== 'ForkEvent' && e.type !== 'WatchEvent';
-            });
-            cb(events);
-          });
+      var getTimeline = function() {
+        return github.repoEvent()
+                .query({
+                  owner: watched.projects[0].owner,
+                  repo: watched.projects[0].repo
+                }).$promise.then(function(events, getResponseHeaders) {
+                  events = _.filter(events, function(e) {
+                    return e.type !== 'ForkEvent' && e.type !== 'WatchEvent';
+                  });
+                  return events;
+                });
       };
 
       return {
-        timeline: function(cb) {
-          getTimeline(cb);
-        }
+        timeline: function() { return getTimeline(); }
       };
     });
 
