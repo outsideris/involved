@@ -35,36 +35,48 @@
       };
     })
     .factory('repo', function($q, github) {
-      var watched = {
-        projects: [
-          {owner: 'summernote', repo: 'angular-summernote'},
-          {owner: 'strongloop', repo: 'express'},
-          {owner: 'summernote', repo: 'summernote'},
-          {owner: 'Automattic', repo: 'socket.io'},
-          {owner: 'bower', repo: 'bower'},
-          {owner: 'iojs', repo: 'io.js'},
-          {owner: 'outsideris', repo: 'slack-invite-automation'},
-          {owner: 'bower', repo: 'bower'}
-        ]
-      };
+      var watchedProjects = [
+        {owner: 'summernote', repo: 'angular-summernote'},
+        {owner: 'strongloop', repo: 'express'},
+        {owner: 'summernote', repo: 'summernote'},
+        {owner: 'Automattic', repo: 'socket.io'},
+        {owner: 'iojs', repo: 'io.js'},
+        {owner: 'outsideris', repo: 'slack-invite-automation'},
+        {owner: 'bower', repo: 'bower'}
+      ];
 
-      var getTimeline = function() {
+      var fetchEventsOfRepo = function(project) {
         var defer = $q.defer();
         github.repoEvent()
           .query({
-            owner: watched.projects[0].owner,
-            repo: watched.projects[0].repo
+            owner: project.owner,
+            repo: project.repo
           }, function(events, headers) {
             events = _.filter(events, function(e) {
               return e.type !== 'ForkEvent' && e.type !== 'WatchEvent';
             });
+
+            if (!project.events) { project.events = []; }
+            project.events = project.events.concat(events);
+
+            defer.resolve(project.events);
+          });
+        return defer.promise;
+      };
+
+      var makeTimeline = function() {
+        var defer = $q.defer();
+        var promises = _.map(watchedProjects, function(p) { return fetchEventsOfRepo(p) });
+        $q.all(promises)
+          .then(function(events) {
+            events = _.sortByAll(_.flatten(events), ['created_at']).reverse();
             defer.resolve(events);
           });
         return defer.promise;
       };
 
       return {
-        timeline: getTimeline
+        timeline: makeTimeline
       };
     });
 
