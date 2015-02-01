@@ -21,7 +21,7 @@
                 IssueCommentEvent: 'octicon-comment-discussion', PushEvent: 'octicon-git-commit',
                 PullRequestEvent: 'octicon-git-pull-request', CommitCommentEvent: 'octicon-comment-discussion',
                 PullRequestReviewCommentEvent: 'octicon-comment-discussion', ReleaseEvent: 'octicon-tag',
-                DeleteEvent: 'octicon-trashcan'
+                DeleteEvent: 'octicon-trashcan', GollumEvent: 'octicon-book'
               }[t.type]"></span>
             <span ng-if="t.type === 'IssuesEvent'" class="octicon" ng-class="{
                 opened: 'octicon-issue-opened',
@@ -74,6 +74,9 @@
               </span>
               <span ng-switch-when="DeleteEvent">
                 deleted {{t.payload.ref_type}} {{t.payload.ref}}
+              </span>
+              <span ng-switch-when="GollumEvent">
+                <span ng-repeat="page in t.payload.pages">{{page.action}} "{{page.title}}"</span>
               </span>
               <span ng-switch-default>
                 {{t.type}} - {{t.payload.action}}
