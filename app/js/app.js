@@ -10,25 +10,10 @@
 
   // controllers
   angular.module('involved')
-    .controller('TimelineCtrl', function($scope, github) {
-      $scope.watch = {
-        projects: [
-          {owner: 'summernote', repo: 'summernote'},
-          {owner: 'Automattic', repo: 'socket.io'},
-          {owner: 'bower', repo: 'bower'}
-        ]
-      };
-
-      github.repoEvent()
-        .query({
-          owner: $scope.watch.projects[0].owner,
-          repo: $scope.watch.projects[0].repo
-        }, function(events, getResponseHeaders) {
-          events = _.filter(events, function(e) {
-            return e.type !== 'ForkEvent' && e.type !== 'WatchEvent';
-          });
-          $scope.timeline = events;
-        });
+    .controller('TimelineCtrl', function($scope, repo) {
+      repo.timeline(function(events) {
+        $scope.timeline = events;
+      });
     });
 
   // services
@@ -46,6 +31,34 @@
           return $resource(githubHost + '/repos/:owner/:repo/events', {
             access_token: token
           });
+        }
+      };
+    })
+    .factory('repo', function(github) {
+      var watched = {
+        projects: [
+          {owner: 'summernote', repo: 'summernote'},
+          {owner: 'Automattic', repo: 'socket.io'},
+          {owner: 'bower', repo: 'bower'}
+        ]
+      };
+
+      var getTimeline = function(cb) {
+        github.repoEvent()
+          .query({
+            owner: watched.projects[0].owner,
+            repo: watched.projects[0].repo
+          }, function(events, getResponseHeaders) {
+            events = _.filter(events, function(e) {
+              return e.type !== 'ForkEvent' && e.type !== 'WatchEvent';
+            });
+            cb(events);
+          });
+      };
+
+      return {
+        timeline: function(cb) {
+          getTimeline(cb);
         }
       };
     });
