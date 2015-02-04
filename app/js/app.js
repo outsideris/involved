@@ -2,10 +2,21 @@
   'use strict';
 
   angular.module('involved', ['ngResource'])
-    .run(function($rootScope, github) {
+    .run(function($rootScope, github, repo) {
       github.user().get(function(user, getResponseHeaders) {
         $rootScope.me = user;
       });
+
+      // temporary
+      repo.watch({owner: 'strongloop', repo: 'express'});
+      repo.watch({owner: 'summernote', repo: 'summernote'});
+      repo.watch({owner: 'Automattic', repo: 'socket.io'});
+      repo.watch({owner: 'iojs', repo: 'io.js'});
+      repo.watch({owner: 'angular', repo: 'angular.js'});
+      repo.watch({owner: 'facebook', repo: 'react'});
+      repo.watch({owner: 'rails', repo: 'rails'});
+      repo.watch({owner: 'antirez', repo: 'redis'});
+      repo.watch({owner: 'bower', repo: 'bower'});
     });
 
   // controllers
