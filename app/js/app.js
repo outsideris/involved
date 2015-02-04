@@ -35,15 +35,27 @@
       };
     })
     .factory('repo', function($q, github) {
-      var watchedProjects = [
-        {owner: 'summernote', repo: 'angular-summernote'},
-        {owner: 'strongloop', repo: 'express'},
-        {owner: 'summernote', repo: 'summernote'},
-        {owner: 'Automattic', repo: 'socket.io'},
-        {owner: 'iojs', repo: 'io.js'},
-        {owner: 'outsideris', repo: 'slack-invite-automation'},
-        {owner: 'bower', repo: 'bower'}
-      ];
+      var watchedProjects = [];
+
+      var watch = function(p) {
+        if (p && p.owner && p.repo) { watchedProjects.push(p); }
+        return watchedProjects;
+      };
+
+      var unwatch = function(p) {
+        if (p && p.owner && p.repo) {
+          var index = _.findIndex(watchedProjects, function(w) {
+            return w.owner === p.owner && w.repo === p.repo;
+          });
+          if (~index) { watchedProjects.splice(index, 1); }
+        }
+        return watchedProjects;
+      };
+
+      var unwatchAll = function() {
+        watchedProjects = [];
+        return watchedProjects;
+      };
 
       var fetchEventsOfRepo = function(project) {
         var defer = $q.defer();
@@ -76,6 +88,9 @@
       };
 
       return {
+        watch: watch,
+        unwatch: unwatch,
+        unwatchAll: unwatchAll,
         timeline: makeTimeline
       };
     });
