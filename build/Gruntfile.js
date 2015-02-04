@@ -22,7 +22,14 @@ module.exports = function(grunt) {
         files: ['../app/css/**/*.styl'],
         tasks: ['stylus:compile']
       }
+    },
+    karma: {
+      options: { configFile: '../spec/karma.conf.js' },
+      test: { }
     }
   });
 
+  grunt.registerTask('default', []);
+  grunt.registerTask('dev', ['stylus', 'watch']);
+  grunt.registerTask('test', ['karma:test']);
 };
