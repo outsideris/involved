@@ -16,6 +16,7 @@ module.exports = function(config) {
       '../app/components/angular-resource/angular-resource.js',
       '../app/components/moment/moment.js',
       '../app/components/lodash/lodash.js',
+      '../app/components/pouchdb/dist/pouchdb.js',
 
       // application code
       '../app/js/app.js',

@@ -104,6 +104,22 @@
         unwatchAll: unwatchAll,
         timeline: makeTimeline
       };
+    })
+    .factory('db', function() {
+      var projects = new PouchDB('projects');
+
+      return {
+        registerProject: function(p, cb) {
+          p._id = Date.now() + "";
+          projects.put(p, cb);
+        },
+        unregisterProject: function(p, cb) {
+          projects.get(p._id, function(err, doc) {
+            if (err) { return cb(err); }
+            projects.remove(doc, cb);
+          });
+        }
+      };
     });
 
   // filters
