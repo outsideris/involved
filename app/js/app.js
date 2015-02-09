@@ -45,27 +45,42 @@
         }
       };
     })
-    .factory('repo', function($q, github) {
+    .factory('repo', function($q, github, db) {
       var watchedProjects = [];
 
-      var watch = function(p) {
-        if (p && p.owner && p.repo) { watchedProjects.push(p); }
-        return watchedProjects;
+      var watch = function(p, cb) {
+        if(typeof cb !== 'function') { cb = function() {};}
+        if (p && p.owner && p.repo) {
+          db.registerProject(p, function(err, doc) {
+            if (err) { return cb(err); }
+            watchedProjects.push(p);
+            cb(null, watchedProjects);
+          });
+        } else { cb(new Error()); }
       };
 
-      var unwatch = function(p) {
+      var unwatch = function(p, cb) {
         if (p && p.owner && p.repo) {
           var index = _.findIndex(watchedProjects, function(w) {
             return w.owner === p.owner && w.repo === p.repo;
           });
-          if (~index) { watchedProjects.splice(index, 1); }
-        }
-        return watchedProjects;
+          if (~index) {
+            db.unregisterProject(watchedProjects[index], function(err, doc) {
+              if (err) { return cb(err); }
+              watchedProjects.splice(index, 1);
+              cb(null, watchedProjects);
+            });
+          }
+        } else { cb(new Error()); }
       };
 
-      var unwatchAll = function() {
-        watchedProjects = [];
-        return watchedProjects;
+      var unwatchAll = function(cb) {
+        db.unregisterAllProjects(function(err) {
+          if (!err) {
+            watchedProjects = [];
+            cb(watchedProjects);
+          } else { cb(err); }
+        });
       };
 
       var fetchEventsOfRepo = function(project) {
@@ -117,6 +132,15 @@
           projects.get(p._id, function(err, doc) {
             if (err) { return cb(err); }
             projects.remove(doc, cb);
+          });
+        },
+        unregisterAllProjects: function(cb) {
+          projects.destroy(function(err, info) {
+            if (err) { cb(err); }
+            if (info.ok) {
+              projects = new PouchDB('projects');
+            }
+            cb();
           });
         }
       };
