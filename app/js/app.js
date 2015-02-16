@@ -142,6 +142,9 @@
             }
             cb();
           });
+        },
+        getProjects: function(cb) {
+          projects.allDocs(cb);
         }
       };
     });

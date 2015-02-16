@@ -55,19 +55,24 @@ describe('Involved', function() {
 
   describe('db service', function() {
     var db;
-    beforeEach(inject(function (_db_) {
-      db = _db_;
-    }));
+    beforeEach(function(done) {
+      inject(function (_db_) {
+        db = _db_;
+        db.unregisterAllProjects(function() {
+          done();
+        });
+      });
+    });
 
     describe('registerProject', function() {
       it('should add a project', function(done) {
         // given
         var p = {owner: 'Automattic', repo: 'socket.io'};
         // when
-        db.registerProject(p, function(err, doc) {
+        db.registerProject(p, function(err, res) {
           // then
-          expect(doc.ok).to.be.ok;
-          expect(doc.id).to.be.exist;
+          expect(res.ok).to.be.ok;
+          expect(res.id).to.be.exist;
           done();
         });
       });
@@ -79,9 +84,9 @@ describe('Involved', function() {
         var p = {owner: 'Automattic', repo: 'socket.io'};
         db.registerProject(p, function(err, doc) {
           p._id = doc.id;
-          db.unregisterProject(p, function(err, doc) {
-            expect(doc.ok).to.be.ok;
-            expect(doc.id).to.be.equal(p._id);
+          db.unregisterProject(p, function(err, res) {
+            expect(res.ok).to.be.ok;
+            expect(res.id).to.be.equal(p._id);
             done();
           });
         });
@@ -94,9 +99,29 @@ describe('Involved', function() {
         var p = {owner: 'Automattic', repo: 'socket.io'};
         var p2= {owner: 'summernote', repo: 'summernote'};
         db.registerProject(p, function(err, doc) {
+          expect(doc.ok).to.be.ok;
           db.registerProject(p2, function(err, doc) {
-            db.unregisterAllProjects(function(err) {
+            expect(doc.ok).to.be.ok;
+            db.unregisterAllProjects(function(err, res) {
               expect(err).to.be.not.ok;
+              done();
+            });
+          });
+        });
+      });
+    });
+
+    describe('getProjects', function() {
+      it('should return all projects', function(done) {
+        // given
+        var p = {owner: 'Automattic', repo: 'socket.io'};
+        var p2= {owner: 'summernote', repo: 'summernote'};
+        db.registerProject(p, function(err, doc) {
+          db.registerProject(p2, function(err, doc) {
+            db.getProjects(function(err, docs) {
+              expect(err).to.be.not.ok;
+              expect(docs.total_rows).to.be.equal(2);
+              expect(docs.rows.length).to.be.equal(2);
               done();
             });
           });
