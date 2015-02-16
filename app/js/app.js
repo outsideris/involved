@@ -45,18 +45,20 @@
         }
       };
     })
-    .factory('repo', function($q, github, db) {
+    .factory('repo', function($q, github) {
+      var projects = new PouchDB('projects');
       var watchedProjects = [];
 
       var watch = function(p, cb) {
         if(typeof cb !== 'function') { cb = function() {};}
         if (p && p.owner && p.repo) {
-          db.registerProject(p, function(err, doc) {
+          p._id = Date.now() + "";
+          projects.put(p, function(err, res) {
             if (err) { return cb(err); }
-            watchedProjects.push(p);
+            if (res.ok) { watchedProjects.push(p); }
             cb(null, watchedProjects);
           });
-        } else { cb(new Error()); }
+        } else { cb(new Error('project information required.')); }
       };
 
       var unwatch = function(p, cb) {
@@ -65,22 +67,16 @@
             return w.owner === p.owner && w.repo === p.repo;
           });
           if (~index) {
-            db.unregisterProject(watchedProjects[index], function(err, doc) {
+            projects.get(watchedProjects[index]._id, function(err, doc) {
               if (err) { return cb(err); }
-              watchedProjects.splice(index, 1);
-              cb(null, watchedProjects);
+              projects.remove(doc, function(err, res) {
+                if (err) { return cb(err); }
+                if (res.ok) { watchedProjects.splice(index, 1); }
+                cb(null, watchedProjects);
+              });
             });
-          }
-        } else { cb(new Error()); }
-      };
-
-      var unwatchAll = function(cb) {
-        db.unregisterAllProjects(function(err) {
-          if (!err) {
-            watchedProjects = [];
-            cb(watchedProjects);
-          } else { cb(err); }
-        });
+          } else { cb(null, watchedProjects); }
+        } else { cb(new Error('project information required.')); }
       };
 
       var fetchEventsOfRepo = function(project) {
@@ -114,38 +110,10 @@
       };
 
       return {
+        db: projects,
         watch: watch,
         unwatch: unwatch,
-        unwatchAll: unwatchAll,
         timeline: makeTimeline
-      };
-    })
-    .factory('db', function() {
-      var projects = new PouchDB('projects');
-
-      return {
-        registerProject: function(p, cb) {
-          p._id = Date.now() + "";
-          projects.put(p, cb);
-        },
-        unregisterProject: function(p, cb) {
-          projects.get(p._id, function(err, doc) {
-            if (err) { return cb(err); }
-            projects.remove(doc, cb);
-          });
-        },
-        unregisterAllProjects: function(cb) {
-          projects.destroy(function(err, info) {
-            if (err) { cb(err); }
-            if (info.ok) {
-              projects = new PouchDB('projects');
-            }
-            cb();
-          });
-        },
-        getProjects: function(cb) {
-          projects.allDocs(cb);
-        }
       };
     });
 
