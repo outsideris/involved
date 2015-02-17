@@ -40,14 +40,35 @@
         },
         repoEvent: function() {
           return $resource(githubHost + '/repos/:owner/:repo/events', {
-            access_token: token
+            access_token: token,
+            page: 1,
+            per_page: 10
           });
         }
       };
     })
     .factory('repo', function($q, github) {
       var projects = new PouchDB('projects');
+      var timeline = new PouchDB('timeline');
+
       var watchedProjects = [];
+      var perPage = 10;
+      var eventsBufferSize = perPage * 2;
+
+      var parseLinkHeader = function(header) {
+        if (header.length == 0) { throw new Error("input must not be of zero length"); }
+
+        var parts = header.split(',');
+        var links = {};
+        _.each(parts, function(p) {
+          var section = p.split(';');
+          if (section.length != 2) { throw new Error("section could not be split on ';'"); }
+          var url = section[0].replace(/<(.*)>/, '$1').trim();
+          var name = section[1].replace(/rel="(.*)"/, '$1').trim();
+          links[name] = url;
+        });
+        return links;
+      };
 
       var watch = function(p, cb) {
         if(typeof cb !== 'function') { cb = function() {};}
@@ -79,8 +100,16 @@
         } else { cb(new Error('project information required.')); }
       };
 
-      var fetchEventsOfRepo = function(project) {
+      var fetchEventsOfRepo = function(project, since) {
         var defer = $q.defer();
+        since = since ? since : 0;
+
+        //if (project.events && project.events.length > 0) {
+        //  var last = _.findIndex(project.events, function(evt) { return evt.id === since;});
+        //  if (project.events.length - last + 1 > perPage) {
+        //    defer.resolve(project.events);
+        //  }
+        //}
         github.repoEvent()
           .query({
             owner: project.owner,
@@ -90,22 +119,29 @@
               return e.type !== 'ForkEvent' && e.type !== 'WatchEvent';
             });
 
-            if (!project.events) { project.events = []; }
-            project.events = project.events.concat(events);
-
-            defer.resolve(project.events);
+            timeline.bulkDocs(events, function(err, res) {
+              if (err) { return defer.reject(err); }
+              timeline.allDocs({include_docs: true}, function(err, res) {
+                if (err) { return defer.reject(err); }
+                return defer.resolve(res.rows);
+              });
+            });
           });
         return defer.promise;
       };
 
-      var makeTimeline = function() {
+      var fetchTimeline = function(since) {
+        since = since ? since : 0;
         var defer = $q.defer();
-        var promises = _.map(watchedProjects, function(p) { return fetchEventsOfRepo(p) });
-        $q.all(promises)
+        projects.allDocs({include_docs: true}, function(err, res) {
+          if (err) { return defer.reject(err); }
+          var promises = _.map(res.rows, function(p) { return fetchEventsOfRepo(p.doc, since) });
+          $q.all(promises)
           .then(function(events) {
-            events = _.sortByAll(_.flatten(events), ['created_at']).reverse();
-            defer.resolve(events);
+            //events = _.sortByAll(_.flatten(events), ['created_at']).reverse();
+            //defer.resolve(_.slice(events, since, perPage));
           });
+        });
         return defer.promise;
       };
 
@@ -113,7 +149,8 @@
         db: projects,
         watch: watch,
         unwatch: unwatch,
-        timeline: makeTimeline
+        fetchTimeline: fetchTimeline,
+        fetchEventsOfRepo: fetchEventsOfRepo
       };
     });
 
