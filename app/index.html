@@ -13,7 +13,7 @@
       </div>
     </nav>
     <section class="main-contents flex-container">
-      <div class="timeline">
+      <div class="timeline" when-scrolled="loadMore()">
         <div class="timeline-cell flex-container flex-container-row" ng-repeat="t in timeline">
           <div class="cell-type">
             <span class="octicon" ng-class="{
@@ -83,6 +83,9 @@
               </span>
             </ng-switch>
           </div>
+        </div>
+        <div class="timeline-cell infinite-loading" ng-show="timeline">
+          loading...
         </div>
       </div>
       <div class="detail"></div>

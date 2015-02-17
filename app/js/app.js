@@ -22,9 +22,33 @@
   // controllers
   angular.module('involved')
     .controller('TimelineCtrl', function($scope, repo) {
-      repo.timeline().then(function(events) {
+      repo.fetchTimeline().then(function(events) {
         $scope.timeline = events
       });
+
+      var loadingMore = false;
+      $scope.loadMore = function() {
+        console.log('load more');
+        loadingMore = true;
+        var lastId = $scope.timeline[$scope.timeline.length - 1].id;
+        repo.timeline(lastId).then(function(events) {
+          $scope.timeline = $scope.timeline.concat(events);
+          loadingMore = false;
+        });
+      };
+    });
+
+  // directives
+  angular.module('involved')
+    .directive('whenScrolled', function() {
+      return function(scope, elem, attr) {
+        var raw = elem[0];
+        elem.on('scroll', function() {
+          if (raw.scrollTop + raw.offsetHeight >= raw.scrollHeight) {
+            scope.$apply(attr.whenScrolled);
+          }
+        });
+      };
     });
 
   // services
