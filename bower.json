@@ -1,0 +1,20 @@
+{
+  "name": "involved",
+  "version": "0.0.1",
+  "homepage": "https://github.com/outsideris/involved",
+  "authors": [
+    "Outsider <outsideris@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "static/components/",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+  }
+}
