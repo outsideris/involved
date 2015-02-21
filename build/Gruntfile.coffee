@@ -19,6 +19,8 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-contrib-csslint')
   grunt.loadNpmTasks('grunt-contrib-coffee')
   grunt.loadNpmTasks('grunt-contrib-less')
+  grunt.loadNpmTasks('grunt-contrib-stylus')
+  grunt.loadNpmTasks('grunt-contrib-watch')
   grunt.loadNpmTasks('grunt-shell')
   grunt.loadNpmTasks('grunt-build-atom-shell')
   grunt.loadNpmTasks('grunt-atom-shell-installer')
@@ -189,6 +191,16 @@ module.exports = (grunt) ->
           stdout: false
           stderr: false
           failOnError: false
+
+    stylus:
+      compile:
+        files:
+          'static/css/style.css': ['src/stylus/style.styl']
+
+    watch:
+      stylus:
+        files: ['src/stylus/**/*.styl']
+        tasks: ['stylus:compile']
 
   opts[pkgName] = {appDir, appName, symbolsDir, buildDir, contentsDir, installDir, shellAppDir, productName, executableName}
 
