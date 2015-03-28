@@ -9,7 +9,5 @@ Thumbs.db
 node_modules
 npm-debug.log
 debug.log
-/tags
-/atom-shell/
-/static/components/
-/static/css/style.css
+/src/static/
+build/atom-shell/
