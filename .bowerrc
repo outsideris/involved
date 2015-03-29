@@ -1,5 +1,5 @@
 {
-  "directory": "../src/static/components/",
+  "directory": "src/static/components/",
   "analytics": true,
   "timeout": 120000
 }
