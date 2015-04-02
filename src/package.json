@@ -18,6 +18,7 @@
     }
   ],
   "dependencies": {
+    "request": "^2.54.0"
   },
   "private": true
 }
