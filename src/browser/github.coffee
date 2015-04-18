@@ -1,6 +1,5 @@
 ipc = require 'ipc'
 request = require 'request'
-_ = require 'lodash'
 
 module.exports = (->
   origin = 'https://api.github.com'
@@ -16,16 +15,15 @@ module.exports = (->
         url: "#{origin}/user"
         headers:
           'User-Agent': 'Involved-App'
-        qs:
-          access_token: TOKEN
+          'Authorization': "token #{TOKEN}"
       }, cb
     repoEvents: (owner, repo, cb) ->
       request {
         url: "#{origin}/repos/#{owner}/#{repo}/events"
         headers:
           'User-Agent': 'Involved-App'
+          'Authorization': "token #{TOKEN}"
         qs:
-          access_token: TOKEN
           page: 1
           per_page: 10
       }, cb
