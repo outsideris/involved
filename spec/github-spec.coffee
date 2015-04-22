@@ -21,6 +21,19 @@ describe 'Github API', ->
       runs ->
         result.login.should.be.equal 'outsideris'
 
+  describe "user", ->
+    it "should return specific user info", () ->
+      result = null
+      github.user 'github', (err, res, body) ->
+        result = JSON.parse body
+
+      waitsFor (->
+        !!result
+      ), 3000
+
+      runs ->
+        result.name.should.be.equal 'GitHub'
+
   describe "repoEvents", ->
     it "should return repository info", () ->
       result = null

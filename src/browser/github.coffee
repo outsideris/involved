@@ -1,4 +1,5 @@
 ipc = require 'ipc'
+
 request = require 'request'
 
 module.exports = (->
@@ -13,6 +14,13 @@ module.exports = (->
     me: (cb) ->
       request {
         url: "#{origin}/user"
+        headers:
+          'User-Agent': 'Involved-App'
+          'Authorization': "token #{TOKEN}"
+      }, cb
+    user: (username, cb) ->
+      request {
+        url: "#{origin}/users/#{username}"
         headers:
           'User-Agent': 'Involved-App'
           'Authorization': "token #{TOKEN}"
