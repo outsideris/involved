@@ -20,13 +20,13 @@ describe 'Repository', ->
     beforeEach ->
       repo.unwatchAll()
 
-#    it "should remove a project I want to unwatch", ->
-#      p = {owner: 'iojs', repo: 'io.js'}
-#      result = repo.watch p
-#      result.length.should.be.equal 1
-#
-#      result = repo.unwatch p
-#      result.length.should.be.equal 0
+    it "should remove a project I want to unwatch", ->
+      p = {owner: 'iojs', repo: 'io.js'}
+      result = repo.watch p
+      result.length.should.be.equal 1
+
+      result = repo.unwatch p
+      result.length.should.be.equal 0
 
     it "should remove a project among multiple projects", ->
       repo.watch {owner: 'iojs', repo: 'io.js'}
