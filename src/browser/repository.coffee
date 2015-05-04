@@ -1,6 +1,8 @@
 ipc = require 'ipc'
 _ = require 'lodash'
 
+github = require './github'
+
 module.exports = (->
   projects = []
 
