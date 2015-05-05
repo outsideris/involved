@@ -5,9 +5,9 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    "download-atom-shell": {
-      version: "0.22.2",
-      outputDir: "./build/atom-shell",
+    "download-electron": {
+      version: "0.25.2",
+      outputDir: "./build/electron",
       rebuild: true
     },
     stylus: {
