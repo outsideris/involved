@@ -10,4 +10,4 @@ node_modules
 npm-debug.log
 debug.log
 /src/static/
-build/atom-shell/
+build/

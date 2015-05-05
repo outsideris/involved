@@ -6,7 +6,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 pushd "${DIR}/build"
   npm install -g grunt-cli
   npm install
-  grunt download-atom-shell
+  grunt download-electron
 popd
 
-"${DIR}/build/atom-shell/Atom.app/Contents/MacOS/Atom" "${DIR}/src"
+"${DIR}/build/electron/Electron.app/Contents/MacOS/Electron" "${DIR}/src"
