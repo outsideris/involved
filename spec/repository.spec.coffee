@@ -1,4 +1,7 @@
+require('./ipc-mock')()
+
 repo = require '../src/browser/repository'
+should = require 'should'
 
 describe 'Repository', ->
 

@@ -1,6 +1,9 @@
 ipc = require 'ipc'
-
 request = require 'request'
+
+Q = require 'q'
+
+req = Q.denodeify(request)
 
 module.exports = (->
   origin = 'https://api.github.com'
@@ -11,22 +14,20 @@ module.exports = (->
   {
     setToken: (t) ->
       TOKEN = t
-    me: (cb) ->
-      request {
+    me: () ->
+      req
         url: "#{origin}/user"
         headers:
           'User-Agent': 'Involved-App'
           'Authorization': "token #{TOKEN}"
-      }, cb
-    user: (username, cb) ->
-      request {
+    user: (username) ->
+      req
         url: "#{origin}/users/#{username}"
         headers:
           'User-Agent': 'Involved-App'
           'Authorization': "token #{TOKEN}"
-      }, cb
-    repoEvents: (owner, repo, cb) ->
-      request {
+    repoEvents: (owner, repo) ->
+      req
         url: "#{origin}/repos/#{owner}/#{repo}/events"
         headers:
           'User-Agent': 'Involved-App'
@@ -34,6 +35,5 @@ module.exports = (->
         qs:
           page: 1
           per_page: 10
-      }, cb
   }
 )()
