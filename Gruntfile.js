@@ -22,10 +22,20 @@ module.exports = function(grunt) {
         files: ['src/stylus/**/*.styl'],
         tasks: ['stylus:compile']
       }
+    },
+    mochaTest: {
+      options: {
+        reporter: 'spec',
+        timeout: 5000
+      },
+      browser: {
+        src: ['spec/**/*.spec.coffee']
+      }
     }
   });
 
   grunt.registerTask('default', []);
   grunt.registerTask('dev', ['stylus', 'watch']);
+  grunt.registerTask('test', ['mochaTest']);
 };
 

@@ -6,7 +6,10 @@
     "grunt-contrib-stylus": "^0.21.0",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-download-electron": "^2.1.1",
+    "grunt-mocha-test": "^0.12.7",
     "load-grunt-tasks": "^3.1.0",
+    "mocha": "^2.2.4",
+    "mockery": "^1.4.0",
     "should": "^5.2.0"
   },
   "scripts": {
