@@ -39,3 +39,16 @@ describe 'Repository', ->
 
       result = repo.unwatch {owner: 'summernote', repo: 'summernote'}
       result.length.should.be.equal 2
+
+  describe "events", ->
+    beforeEach ->
+      repo.unwatchAll()
+      repo.watch {owner: 'nodejs', repo: 'io.js'}
+
+    it "should return timeline of repositories", (done) ->
+      repo.events({owner: 'nodejs', repo: 'io.js'}).then (events) ->
+        events.length.should.above 9
+        events[0].should.have.property('type');
+        events[0].should.have.property('payload');
+        done()
+      .catch done
