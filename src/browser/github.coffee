@@ -3,7 +3,16 @@ request = require 'request'
 
 Q = require 'q'
 
-req = Q.denodeify(request)
+req = (options) ->
+  deferred = Q.defer()
+  request options, (err, res, body) ->
+    return deferred.reject err if err?
+    try
+      deferred.resolve
+        res: res
+        body: JSON.parse body
+    catch e then deferred.reject e
+  deferred.promise
 
 module.exports = (->
   origin = 'https://api.github.com'

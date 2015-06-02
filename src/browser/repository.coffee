@@ -21,8 +21,8 @@ module.exports = (->
     unwatchAll: ->
       projects = []
     events: (p) ->
-      github.repoEvents(p.owner, p.repo).then (res) ->
-        JSON.parse res[0].body
+      github.repoEvents(p.owner, p.repo).then (d) ->
+        d.body
       .catch() if p?.owner? and p.repo?
   }
 )()
