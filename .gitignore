@@ -11,3 +11,6 @@ npm-debug.log
 debug.log
 /src/static/
 build/
+
+db.json
+.~db.json

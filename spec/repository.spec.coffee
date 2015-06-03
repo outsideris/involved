@@ -42,13 +42,15 @@ describe 'Repository', ->
 
   describe "events", ->
     beforeEach ->
+      delete repo.db.remove()
       repo.unwatchAll()
       repo.watch {owner: 'nodejs', repo: 'io.js'}
+      repo.watch {owner: 'jquery', repo: 'jquery'}
 
     it "should return timeline of repositories", (done) ->
-      repo.events({owner: 'nodejs', repo: 'io.js'}).then (events) ->
-        events.length.should.above 9
-        events[0].should.have.property('type');
-        events[0].should.have.property('payload');
+      repo.events().then () ->
+        repo.db.size().should.be.equal(20);
+        repo.db.find().should.have.property('type')
+        repo.db.find().should.have.property('payload')
         done()
       .catch done
