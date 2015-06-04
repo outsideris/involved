@@ -49,7 +49,7 @@ describe 'Repository', ->
 
     it "should return timeline of repositories", (done) ->
       repo.events().then () ->
-        repo.db.size().should.be.equal(20);
+        (repo.db.size() > 10).should.be.ok;
         repo.db.find().should.have.property('type')
         repo.db.find().should.have.property('payload')
         done()

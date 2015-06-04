@@ -25,8 +25,8 @@ module.exports = (->
       projects = []
     events: ->
       deferred = Q.defer()
-      Q.all(github.repoEvents(p.owner, p.repo) for p in projects).then (r) ->
-        db.push e  for e in d.body for d in r
+      Q.all(github.repoEvents(p.owner, p.repo) for p in projects).then (result) ->
+        db.push e for e in d.body when e.type isnt 'ForkEvent' and e.type isnt 'WatchEvent' for d in result
         deferred.resolve()
       .catch () ->
         deferred.reject e
