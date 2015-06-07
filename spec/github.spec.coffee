@@ -32,8 +32,8 @@ describe 'Github API', ->
         done()
       .catch done
 
-    it "should return 10 events", (done) ->
+    it "should return events", (done) ->
       github.repoEvents('jquery', 'jquery').then (d) ->
-        d.body.length.should.be.equal 10
+        d.body.length.should.be.equal github.pageSize
         done()
       .catch done
