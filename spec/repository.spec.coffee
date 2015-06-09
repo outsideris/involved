@@ -72,7 +72,6 @@ describe 'Repository', ->
 
     it "should return timeline since id", (done) ->
       repo.timeline().then (list) ->
-        console.log list[timelineSize-1].id
         repo.timeline(list[timelineSize-1].id).then (list) ->
           list.length.should.be.equal(timelineSize);
           done()
