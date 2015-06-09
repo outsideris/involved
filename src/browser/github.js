@@ -1,5 +1,4 @@
-var ipc = require('ipc'),
-    request = require('request'),
+var request = require('request'),
     Q = require('q');
 
 var req = function(options) {

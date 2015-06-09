@@ -1,5 +1,3 @@
-var ipc = require('ipc');
-
 var _ = require('lodash'),
   Q = require('q'),
   lowdb = require('lowdb');
