@@ -2,10 +2,14 @@
   'use strict';
 
   angular.module('involved', ['ngResource'])
-    .run(function($rootScope, repo) {
-      //github.user().get(function(user, getResponseHeaders) {
-      //  $rootScope.me = user;
-      //});
+    .run(function($rootScope, $timeout, github, repo) {
+      github.me();
+
+      $rootScope.$on('myProfileReceived', function(event, profile) {
+        $timeout(function() {
+          $rootScope.me = profile;
+        }, 0);
+      });
 
       // temporary
       repo.watch({owner: 'strongloop', repo: 'express'});
@@ -54,23 +58,36 @@
     });
 
   // services
+  var ipc = require('ipc');
   angular.module('involved')
-    .factory('repo', function($rootScope) {
-      var ipc = require('ipc');
+    .factory('github', function($rootScope) {
+      ipc.on('github.me', function(profile) {
+        console.log('receive');
+        console.log(profile)
+        $rootScope.$broadcast('myProfileReceived', profile);
+      });
 
-      ipc.on('timeline', function(list) {
+      return {
+        me: function() {
+          console.log('send');
+          ipc.send('github.me');
+        }
+      };
+    })
+    .factory('repo', function($rootScope) {
+      ipc.on('repo.timeline', function(list) {
         $rootScope.$broadcast('timelineReceived', list);
       });
 
       return {
         watch: function(p) {
-          return ipc.sendSync('watch', p);
+          return ipc.sendSync('repo.watch', p);
         },
         unwatch: function(p, cb) {
-          return ipc.sendSync('unwatch', p);
+          return ipc.sendSync('repo.unwatch', p);
         },
         timeline: function(since) {
-          ipc.send('timeline', since);
+          ipc.send('repo.timeline', since);
         }
       };
     });
