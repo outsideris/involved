@@ -62,8 +62,6 @@
   angular.module('involved')
     .factory('github', function($rootScope) {
       ipc.on('github.me', function(profile) {
-        console.log('receive');
-        console.log(profile)
         $rootScope.$broadcast('myProfileReceived', profile);
       });
 
@@ -83,7 +81,7 @@
         watch: function(p) {
           return ipc.sendSync('repo.watch', p);
         },
-        unwatch: function(p, cb) {
+        unwatch: function(p) {
           return ipc.sendSync('repo.unwatch', p);
         },
         timeline: function(since) {
@@ -95,10 +93,10 @@
   // filters
   angular.module('involved')
     .filter('fromNow', function() {
-      return function(date) { return moment(date).fromNow(); }
+      return function(date) { return moment(date).fromNow(); };
     })
     .filter('removeRef', function() {
-      return function(ref) { return ref.replace('refs/heads/', ''); }
+      return function(ref) { return ref.replace('refs/heads/', ''); };
     })
     .filter('shortSha', function() {
       return function(sha, length) {

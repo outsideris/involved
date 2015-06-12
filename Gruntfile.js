@@ -31,6 +31,13 @@ module.exports = function(grunt) {
       browser: {
         src: ['spec/**/*.spec.coffee']
       }
+    },
+    jshint: {
+      options: {
+        jshintrc: true
+      },
+      browser: { src: 'src/browser/**/*.js' },
+      renderer: { src: 'src/client/**/*.js' }
     }
   });
 

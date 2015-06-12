@@ -1,3 +1,5 @@
+'use strict';
+
 var _ = require('lodash'),
   Q = require('q'),
   lowdb = require('lowdb');
@@ -18,9 +20,9 @@ module.exports = (function() {
     },
     unwatch: function(p) {
       if (p && p.owner && p.repo) {
-        var index = _.findIndex(projects, (function(o) {
+        var index = _.findIndex(projects, function(o) {
           return o.owner === p.owner && o.repo === p.repo;
-        }));
+        });
         if (~index) { projects.splice(index, 1); }
       }
       return projects;
@@ -35,7 +37,7 @@ module.exports = (function() {
       Q.all(
         _.chain(projects).filter(function(p) {
           return db.chain().where({repo: {name: p.owner+'/'+p.repo}})
-              .filter(function(o) { return o.id<sinceId}).value().length < github.pageSize/4;
+              .filter(function(o) { return o.id<sinceId; }).value().length < github.pageSize/4;
         }).map(function(p) {
           return github.repoEvents(p.owner, p.repo, p.nextPage);
         }).value()
@@ -49,7 +51,7 @@ module.exports = (function() {
             });
           });
           projects.forEach(function(p) {
-            p.nextPage = (p.nextPage || 1) + 1
+            p.nextPage = (p.nextPage || 1) + 1;
           });
           deferred.resolve();
         }).catch(function(e) { deferred.reject(e); });
@@ -57,14 +59,14 @@ module.exports = (function() {
     },
     timeline: function(sinceId) {
       var deferred = Q.defer();
-      var sinceId = sinceId || Infinity;
+      sinceId = sinceId || Infinity;
 
       this.events(sinceId).then(function() {
-        var list = db.chain().filter(function(o) { return o.id<sinceId})
+        var list = db.chain().filter(function(o) { return o.id<sinceId; })
           .sortBy('created_at').reverse().take(github.pageSize/4).value();
         deferred.resolve(list);
       }).catch(function(e) { deferred.reject(e); });
       return deferred.promise;
     }
-  }
+  };
 })();

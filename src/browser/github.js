@@ -1,3 +1,5 @@
+'use strict';
+
 var request = require('request'),
     Q = require('q');
 
@@ -10,21 +12,22 @@ var req = function(options) {
         res: res,
         body: JSON.parse(body)
       });
-    } catch(e) { deferred.reject(e) }
+    } catch(e) { deferred.reject(e); }
   });
   return deferred.promise;
-}
+};
 
 module.exports = (function() {
-  var origin = 'https://api.github.com'
-  var TOKEN = ''
+  var origin = 'https://api.github.com',
+      TOKEN = '';
 
   // user-agent required
   // https://developer.github.com/v3/#user-agent-required
   return {
     pageSize: 60,
     setToken: function(t) {
-      return TOKEN = t
+      TOKEN = t;
+      return TOKEN;
     },
     me: function() {
       return req({
@@ -53,7 +56,7 @@ module.exports = (function() {
         },
         qs: {
           page: page || 1,
-          per_page: this.pageSize
+          'per_page': this.pageSize
         }
       });
     }

@@ -1,9 +1,11 @@
+'use strict';
+
 var ipc = require('ipc');
 
-var github = require('./github');
+var github = require('./github'),
     repo = require('./repository');
 
-ipc.on('github.me', function(event, id) {
+ipc.on('github.me', function(event) {
   github.me().then(function(d) {
     event.sender.send('github.me', d.body);
   });
