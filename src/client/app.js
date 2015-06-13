@@ -67,7 +67,6 @@
 
       return {
         me: function() {
-          console.log('send');
           ipc.send('github.me');
         }
       };

@@ -8,7 +8,7 @@ var github = require('./github'),
 ipc.on('github.me', function(event) {
   github.me().then(function(d) {
     event.sender.send('github.me', d.body);
-  });
+  }).catch(function(e) { console.log(e);});;
 });
 
 ipc.on('repo.watch', function(event, project) {
@@ -22,6 +22,6 @@ ipc.on('repo.unwatch', function(event, project) {
 ipc.on('repo.timeline', function(event, id) {
   repo.timeline(id).then(function(list) {
     event.sender.send('repo.timeline', list);
-  });
+  }).catch(function(e) { console.log(e);});
 });
 

@@ -8,6 +8,7 @@ var req = function(options) {
   request(options, function(err, res, body) {
     if (err) { return deferred.reject(); }
     try {
+      if (res.statusCode !== 200) { return deferred.reject(JSON.parse(body));}
       deferred.resolve({
         res: res,
         body: JSON.parse(body)

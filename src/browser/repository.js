@@ -47,7 +47,6 @@ module.exports = (function() {
               if (evt.type !== 'ForkEvent' && evt.type !== 'WatchEvent') {
                 db.push(evt);
               }
-
             });
           });
           projects.forEach(function(p) {
