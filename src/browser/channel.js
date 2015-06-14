@@ -8,7 +8,7 @@ var github = require('./github'),
 ipc.on('github.me', function(event) {
   github.me().then(function(d) {
     event.sender.send('github.me', d.body);
-  }).catch(function(e) { console.log(e);});;
+  }).catch(function(e) { console.log(e);});
 });
 
 ipc.on('repo.watch', function(event, project) {

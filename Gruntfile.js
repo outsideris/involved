@@ -37,7 +37,7 @@ module.exports = function(grunt) {
         jshintrc: true
       },
       browser: { src: 'src/browser/**/*.js' },
-      renderer: { src: 'src/client/**/*.js' }
+      renderer: { src: 'src/renderer/**/*.js' }
     }
   });
 
