@@ -15,20 +15,20 @@
 </nav>
 <section class="main-contents flex-container">
   <div class="timeline" when-scrolled="loadMore()">
-    <div class="timeline-cell flex-container flex-container-row" ng-repeat="t in timeline">
+    <div class="timeline-cell flex-container flex-container-row" ng-repeat="t in timeline" ng-click="showEvent(t)">
       <div class="cell-type">
-            <span class="octicon" ng-class="{
-                CreateEvent: 'octicon-git-branch',
-                IssueCommentEvent: 'octicon-comment-discussion', PushEvent: 'octicon-git-commit',
-                PullRequestEvent: 'octicon-git-pull-request', CommitCommentEvent: 'octicon-comment-discussion',
-                PullRequestReviewCommentEvent: 'octicon-comment-discussion', ReleaseEvent: 'octicon-tag',
-                DeleteEvent: 'octicon-trashcan', GollumEvent: 'octicon-book'
-              }[t.type]"></span>
-            <span ng-if="t.type === 'IssuesEvent'" class="octicon" ng-class="{
-                opened: 'octicon-issue-opened',
-                closed: 'octicon-issue-closed',
-                reopened: 'octicon-issue-reopened'
-              }[t.payload.action]"></span>
+        <span class="octicon" ng-class="{
+            CreateEvent: 'octicon-git-branch',
+            IssueCommentEvent: 'octicon-comment-discussion', PushEvent: 'octicon-git-commit',
+            PullRequestEvent: 'octicon-git-pull-request', CommitCommentEvent: 'octicon-comment-discussion',
+            PullRequestReviewCommentEvent: 'octicon-comment-discussion', ReleaseEvent: 'octicon-tag',
+            DeleteEvent: 'octicon-trashcan', GollumEvent: 'octicon-book'
+          }[t.type]"></span>
+        <span ng-if="t.type === 'IssuesEvent'" class="octicon" ng-class="{
+            opened: 'octicon-issue-opened',
+            closed: 'octicon-issue-closed',
+            reopened: 'octicon-issue-reopened'
+          }[t.payload.action]"></span>
       </div>
       <div class="cell-body">
         <div class="repo">{{t.repo.name}}</div>
@@ -89,7 +89,25 @@
       loading...
     </div>
   </div>
-  <div class="detail"></div>
+  <div class="detail">
+    <h1><span class="mega-octicon octicon-repo"></span>{{detail.repo.name}}</h1>
+    <h1>{{detail.payload.issue.title}}</h1>
+    <div>
+      {{detail.payload.issue.state}} {{detail.payload.issue.user.login}} opened this issue
+      {{detail.payload.issue.created_at | fromNow}} - {{detail.payload.issue.comments}} comments
+    </div>
+    <div>
+      <img ng-src="{{detail.payload.issue.user.avatar_url}}" class="avatar">
+      <div>{{detail.payload.issue.login}} commented {{detail.payload.issue.created_at | fromNow}}</div>
+      <div>{{detail.payload.issue.body}}</div>
+    </div>
+    ...
+    <div>
+      <img ng-src="{{detail.payload.comment.user.avatar_url}}" class="avatar">
+      <div>{{detail.payload.comment.user.login}} commented {{detail.payload.comment.created_at | fromNow}}</div>
+      <div>{{detail.payload.comment.body}}</div>
+    </div>
+  </div>
 </section>
 
 <script src="renderer/init.js"></script>

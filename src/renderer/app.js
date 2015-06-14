@@ -42,6 +42,10 @@
         var lastId = $scope.timeline[$scope.timeline.length - 1].id;
         repo.timeline(lastId);
       };
+
+      $scope.showEvent = function(evt) {
+        $scope.detail = evt;
+      };
     });
 
   // directives
