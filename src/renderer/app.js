@@ -46,6 +46,10 @@
       $scope.showEvent = function(evt) {
         $scope.detail = evt;
       };
+
+      $scope.state= function(status) {
+        return 'state-' + status;
+      };
     });
 
   // directives
