@@ -110,5 +110,9 @@
         length = length || 7;
         return sha ? sha.substr(0, length) : sha;
       };
+    })
+    .filter('md', function($sce) {
+      var md = window.markdownit();
+      return function(text) { return $sce.trustAsHtml(md.render(text)); };
     });
 })();

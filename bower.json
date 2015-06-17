@@ -17,6 +17,7 @@
     "angular-resource": "~1.4.0",
     "moment": "~2.10.3",
     "octicons": "~2.4.1",
-    "primer-css": "~2.2.1"
+    "primer-css": "~2.2.1",
+    "markdown-it": "~4.2.2"
   }
 }

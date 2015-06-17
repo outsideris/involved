@@ -5,6 +5,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self'; style-src 'self' 'unsafe-inline';">
   <link rel="stylesheet" href="static/components/octicons/octicons/octicons.css">
   <link rel="stylesheet" href="static/components/primer-css/css/primer.css">
+  <link rel="stylesheet" href="static/components/primer-markdown/dist/user-content.css">
   <link rel="stylesheet" href="static/css/style.css">
 </head>
 <body class="flex-container flex-container-row" ng-controller="TimelineCtrl"  tabindex="-1">
@@ -109,7 +110,7 @@
           <span class="author">{{detail.payload.issue.user.login}}</span>
           <span class="meta"> commented {{detail.payload.issue.created_at | fromNow}}</span>
         </div>
-        <div class="comment-body"><p>{{detail.payload.issue.body}}</p></div>
+        <div class="comment-body markdown-body" ng-bind-html="detail.payload.issue.body | md"></div>
       </div>
 
       <span class="hidden-text-expander expander"><a href="#">&hellip;</a></span>
@@ -120,7 +121,7 @@
           <span class="author">{{detail.payload.comment.user.login}}</span>
           <span class="meta"> commented {{detail.payload.comment.created_at | fromNow}}</span>
         </div>
-        <div class="comment-body"><p>{{detail.payload.comment.body}}</p></div>
+        <div class="comment-body markdown-body" ng-bind-html="detail.payload.comment.body | md"></div>
       </div>
     </div>
   </div>
@@ -130,6 +131,7 @@
 <script src="static/components/angular/angular.js"></script>
 <script src="static/components/angular-resource/angular-resource.js"></script>
 <script src="static/components/moment/moment.js"></script>
+<script src="static/components/markdown-it/dist/markdown-it.js"></script>
 <script src="renderer/app.js"></script>
 </body>
 </html>
