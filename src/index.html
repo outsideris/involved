@@ -19,7 +19,7 @@
   <div class="timeline" when-scrolled="loadMore()">
     <div class="timeline-cell flex-container flex-container-row" ng-repeat="t in timeline" ng-click="showEvent(t)">
       <div class="cell-type">
-        <span class="octicon" ng-class="{
+        <span class="octicon" ng-if="t.type !== IssuesEvent" ng-class="{
             CreateEvent: 'octicon-git-branch',
             IssueCommentEvent: 'octicon-comment-discussion', PushEvent: 'octicon-git-commit',
             PullRequestEvent: 'octicon-git-pull-request', CommitCommentEvent: 'octicon-comment-discussion',
@@ -33,57 +33,57 @@
           }[t.payload.action]"></span>
       </div>
       <div class="cell-body">
+        <time>{{t.created_at | fromNow}}</time>
         <div class="repo">{{t.repo.name}}</div>
         <img ng-src="{{t.actor.avatar_url}}v=3&s=40" class="avatar avatar-small">
-        <time>{{t.created_at | fromNow}}</time>
         <a href="{{t.actor.url}}" class="username">{{t.actor.login}}</a>
         <ng-switch on="t.type">
-              <span ng-switch-when="CreateEvent">
-                created {{t.payload.ref_type}}
-                <div class="title">"{{t.payload.ref}}"</div>
-              </span>
-              <span ng-switch-when="IssuesEvent">
-                {{t.payload.action}} issue #{{t.payload.issue.number}}
-                <div class="title">"{{t.payload.issue.title}}"</div>
-              </span>
-              <span ng-switch-when="IssueCommentEvent">
-                commented on issue #{{t.payload.issue.number}}
-                <div class="title">"{{t.payload.issue.title}}"</div>
-              </span>
-              <span ng-switch-when="PushEvent">
-                pushed {{t.payload.size}}
-                <span ng-if="t.payload.size > 1">commits</span>
-                <span ng-if="t.payload.size === 1">commit</span>
-                to {{t.payload.ref | removeRef}}
-              </span>
-              <span ng-switch-when="PullRequestEvent">
-                <span ng-if="t.payload.pull_request.merged">merged</span>
-                <span ng-if="!t.payload.pull_request.merged">{{t.payload.action}}</span>
-                pull request #{{t.payload.pull_request.number}}
-                <div class="title">"{{t.payload.pull_request.title}}"</div>
-              </span>
-              <span ng-switch-when="CommitCommentEvent">
-                commented on commit
-                @{{t.payload.comment.commit_id | shortSha}}
-              </span>
-              <span ng-switch-when="PullRequestReviewCommentEvent">
-                commented on pull request
-                #{{t.payload.pull_request.number}}
-                <div class="title">"{{t.payload.pull_request.title}}"</div>
-              </span>
-              <span ng-switch-when="ReleaseEvent">
-                {{t.payload.action}} {{t.payload.release.tag_name}}
-                <div class="title" ng-if="t.payload.release.name">"{{t.payload.release.name}}"</div>
-              </span>
-              <span ng-switch-when="DeleteEvent">
-                deleted {{t.payload.ref_type}} {{t.payload.ref}}
-              </span>
-              <span ng-switch-when="GollumEvent">
-                <span ng-repeat="page in t.payload.pages">{{page.action}} "{{page.title}}"</span>
-              </span>
-              <span ng-switch-default>
-                {{t.type}} - {{t.payload.action}}
-              </span>
+          <span ng-switch-when="CreateEvent">
+            created {{t.payload.ref_type}}
+            <div class="title">"{{t.payload.ref}}"</div>
+          </span>
+          <span ng-switch-when="IssuesEvent">
+            {{t.payload.action}} issue #{{t.payload.issue.number}}
+            <div class="title">"{{t.payload.issue.title}}"</div>
+          </span>
+          <span ng-switch-when="IssueCommentEvent">
+            commented on issue #{{t.payload.issue.number}}
+            <div class="title">"{{t.payload.issue.title}}"</div>
+          </span>
+          <span ng-switch-when="PushEvent">
+            pushed {{t.payload.size}}
+            <span ng-if="t.payload.size > 1">commits</span>
+            <span ng-if="t.payload.size === 1">commit</span>
+            to {{t.payload.ref | removeRef}}
+          </span>
+          <span ng-switch-when="PullRequestEvent">
+            <span ng-if="t.payload.pull_request.merged">merged</span>
+            <span ng-if="!t.payload.pull_request.merged">{{t.payload.action}}</span>
+            pull request #{{t.payload.pull_request.number}}
+            <div class="title">"{{t.payload.pull_request.title}}"</div>
+          </span>
+          <span ng-switch-when="CommitCommentEvent">
+            commented on commit
+            @{{t.payload.comment.commit_id | shortSha}}
+          </span>
+          <span ng-switch-when="PullRequestReviewCommentEvent">
+            commented on pull request
+            #{{t.payload.pull_request.number}}
+            <div class="title">"{{t.payload.pull_request.title}}"</div>
+          </span>
+          <span ng-switch-when="ReleaseEvent">
+            {{t.payload.action}} {{t.payload.release.tag_name}}
+            <div class="title" ng-if="t.payload.release.name">"{{t.payload.release.name}}"</div>
+          </span>
+          <span ng-switch-when="DeleteEvent">
+            deleted {{t.payload.ref_type}} {{t.payload.ref}}
+          </span>
+          <span ng-switch-when="GollumEvent">
+            <span ng-repeat="page in t.payload.pages">{{page.action}} "{{page.title}}"</span>
+          </span>
+          <span ng-switch-default>
+            {{t.type}} - {{t.payload.action}}
+          </span>
         </ng-switch>
       </div>
     </div>
