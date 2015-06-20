@@ -60,6 +60,15 @@ module.exports = (function() {
           'per_page': this.pageSize
         }
       });
+    },
+    emojis: function() {
+      return req({
+        url: origin+'/emojis',
+        headers: {
+          'User-Agent': 'Involved-App',
+          'Authorization': 'token ' + TOKEN
+        }
+      });
     }
   };
 })();

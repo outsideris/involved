@@ -37,3 +37,10 @@ describe 'Github API', ->
         d.body.length.should.be.equal github.pageSize
         done()
       .catch done
+
+  describe "emojis", ->
+    it "should return emoji list", (done) ->
+      github.emojis().then (d) ->
+        d.body['+1'].should.be.ok
+        done()
+      .catch done
