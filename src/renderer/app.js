@@ -73,9 +73,16 @@
         $rootScope.$broadcast('myProfileReceived', profile);
       });
 
+      ipc.on('github.emojis', function(emojis) {
+        $rootScope.$broadcast('emojisReceived', emojis);
+      });
+
       return {
         me: function() {
           ipc.send('github.me');
+        },
+        emojis: function() {
+          ipc.send('github.emojis');
         }
       };
     })
@@ -95,6 +102,23 @@
           ipc.send('repo.timeline', since);
         }
       };
+    })
+    .factory('markdown', function($rootScope, github) {
+      var md = window.markdownit(),
+          list;
+
+      github.emojis();
+      $rootScope.$on('emojisReceived', function(event, emojis) {
+        list = emojis
+
+        if (!md.renderer.rules.emoji) { md.use(window.markdownitEmoji);  }
+        md.renderer.rules.emoji = function(token, idx) {
+          var code = token[idx].markup;
+          return '<img title=":'+code+':" alt=":'+code+':" src="'+list[code]+'" class="emoji">';
+        };
+      });
+
+      return md;
     });
 
   // filters
@@ -111,8 +135,7 @@
         return sha ? sha.substr(0, length) : sha;
       };
     })
-    .filter('md', function($sce) {
-      var md = window.markdownit();
-      return function(text) { return $sce.trustAsHtml(md.render(text)); };
+    .filter('md', function($sce, markdown) {
+      return function(text) { return $sce.trustAsHtml(markdown.render(text)); };
     });
 })();
