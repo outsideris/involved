@@ -92,38 +92,62 @@
     </div>
   </div>
   <div class="detail" ng-if="detail">
-    <div class="d-head">
-      <h2 class="d-repo"><span class="mega-octicon octicon-repo"></span>{{detail.repo.name}}</h2>
-      <h1>{{detail.payload.issue.title}}</h1>
-      <div>
-        <span class="state" ng-class="state(detail.payload.issue.state)">{{detail.payload.issue.state}}</span>
-        <span class="author">{{detail.payload.issue.user.login}}</span>
-        <span class="meta">
-          opened this issue {{detail.payload.issue.created_at | fromNow}} - {{detail.payload.issue.comments}} comments
-        </span>
-      </div>
-    </div>
-    <div class="d-body">
-      <div class="comment">
-        <img ng-src="{{detail.payload.issue.user.avatar_url}}v=3&s=45" class="avatar avatar-small">
-        <div class="comment-head">
+    <ng-switch on="detail.type">
+      <div class="d-head" ng-switch-when="IssueCommentEvent">
+        <h2 class="d-repo"><span class="mega-octicon octicon-repo"></span>{{detail.repo.name}}</h2>
+        <h1>{{detail.payload.issue.title}} <span class="issue-num">#{{detail.payload.issue.number}}</span></h1>
+        <div>
+          <span class="state" ng-class="state(detail.payload.issue.state)">{{detail.payload.issue.state}}</span>
           <span class="author">{{detail.payload.issue.user.login}}</span>
-          <span class="meta"> commented {{detail.payload.issue.created_at | fromNow}}</span>
+          <span class="meta">
+            opened this issue {{detail.payload.issue.created_at | fromNow}} - {{detail.payload.issue.comments}} comments
+          </span>
         </div>
-        <div class="comment-body markdown-body" ng-bind-html="detail.payload.issue.body | md"></div>
+      </div>
+      <div class="d-head" ng-switch-when="IssuesEvent">
+        <h2 class="d-repo"><span class="mega-octicon octicon-repo"></span>{{detail.repo.name}}</h2>
+        <h1>{{detail.payload.issue.title}} <span class="issue-num">#{{detail.payload.issue.number}}</span></h1>
+        <div>
+          <span class="state" ng-class="state(detail.payload.issue.state)">{{detail.payload.issue.state}}</span>
+          <span class="author">{{detail.payload.issue.user.login}}</span>
+          <span class="meta">
+            opened this issue {{detail.payload.issue.created_at | fromNow}} - {{detail.payload.issue.comments}} comments
+          </span>
+        </div>
       </div>
 
-      <span class="hidden-text-expander expander"><a href="#">&hellip;</a></span>
-
-      <div class="comment">
-        <img ng-src="{{detail.payload.comment.user.avatar_url}}v=3&s=45" class="avatar avatar-small">
-        <div class="comment-head">
-          <span class="author">{{detail.payload.comment.user.login}}</span>
-          <span class="meta"> commented {{detail.payload.comment.created_at | fromNow}}</span>
+      <div class="d-body" ng-switch-when="IssueCommentEvent">
+        <div class="comment">
+          <img ng-src="{{detail.payload.issue.user.avatar_url}}v=3&s=45" class="avatar avatar-small">
+          <div class="comment-head">
+            <span class="author">{{detail.payload.issue.user.login}}</span>
+            <span class="meta"> commented {{detail.payload.issue.created_at | fromNow}}</span>
+          </div>
+          <div class="comment-body markdown-body" ng-bind-html="detail.payload.issue.body | md"></div>
         </div>
-        <div class="comment-body markdown-body" ng-bind-html="detail.payload.comment.body | md"></div>
+
+        <span class="hidden-text-expander expander" ng-if="detail.payload.comment"><a href="#">&hellip;</a></span>
+
+        <div class="comment">
+          <img ng-src="{{detail.payload.comment.user.avatar_url}}v=3&s=45" class="avatar avatar-small">
+          <div class="comment-head">
+            <span class="author">{{detail.payload.comment.user.login}}</span>
+            <span class="meta"> commented {{detail.payload.comment.created_at | fromNow}}</span>
+          </div>
+          <div class="comment-body markdown-body" ng-bind-html="detail.payload.comment.body | md"></div>
+        </div>
       </div>
-    </div>
+      <div class="d-body" ng-switch-when="IssuesEvent">
+        <div class="comment">
+          <img ng-src="{{detail.payload.issue.user.avatar_url}}v=3&s=45" class="avatar avatar-small">
+          <div class="comment-head">
+            <span class="author">{{detail.payload.issue.user.login}}</span>
+            <span class="meta"> commented {{detail.payload.issue.created_at | fromNow}}</span>
+          </div>
+          <div class="comment-body markdown-body" ng-bind-html="detail.payload.issue.body | md"></div>
+        </div>
+      </div>
+    </ng-switch>
   </div>
 </section>
 
