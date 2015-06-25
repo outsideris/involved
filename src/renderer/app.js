@@ -136,6 +136,12 @@
       };
     })
     .filter('md', function($sce, markdown) {
-      return function(text) { return $sce.trustAsHtml(markdown.render(text)); };
+      return function(text) {
+        if (text && text.trim() !== '') {
+          return $sce.trustAsHtml(markdown.render(text));
+        } else {
+          return $sce.trustAsHtml('<p class="text-muted">No description provided.</p>');
+        }
+      };
     });
 })();
