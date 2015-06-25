@@ -115,6 +115,21 @@
           </span>
         </div>
       </div>
+      <div class="d-head" ng-switch-when="PullRequestEvent">
+        <h2 class="d-repo"><span class="mega-octicon octicon-repo"></span>{{detail.repo.name}}</h2>
+        <h1>{{detail.payload.pull_request.title}} <span class="issue-num">#{{detail.payload.pull_request.number}}</span></h1>
+        <div>
+          <span class="state" ng-class="state(detail.payload.pull_request.state)">{{detail.payload.pull_request.state}}</span>
+          <span class="author">{{detail.payload.pull_request.user.login}}</span>
+          <span class="meta">
+            wants to merge commits into
+            <span class="commit-ref">{{detail.payload.pull_request.base.label}}</span>
+            from
+            <span class="commit-ref">{{detail.payload.pull_request.head.label}}</span>
+            <span ng-if="detail.payload.pull_request.state==='merged'">{{detail.payload.pull_request.merged_at | fromNow}}</span>
+          </span>
+        </div>
+      </div>
       <div class="d-head" ng-switch-when="PullRequestReviewCommentEvent">
         <h2 class="d-repo"><span class="mega-octicon octicon-repo"></span>{{detail.repo.name}}</h2>
         <h1>{{detail.payload.pull_request.title}} <span class="issue-num">#{{detail.payload.pull_request.number}}</span></h1>
@@ -160,6 +175,16 @@
             <span class="meta"> commented {{detail.payload.issue.created_at | fromNow}}</span>
           </div>
           <div class="comment-body markdown-body" ng-bind-html="detail.payload.issue.body | md"></div>
+        </div>
+      </div>
+      <div class="d-body" ng-switch-when="PullRequestEvent">
+        <div class="comment">
+          <img ng-src="{{detail.payload.pull_request.user.avatar_url}}v=3&s=45" class="avatar avatar-small">
+          <div class="comment-head">
+            <span class="author">{{detail.payload.pull_request.user.login}}</span>
+            <span class="meta"> commented {{detail.payload.pull_request.created_at | fromNow}}</span>
+          </div>
+          <div class="comment-body markdown-body" ng-bind-html="detail.payload.pull_request.body | md"></div>
         </div>
       </div>
       <div class="d-body" ng-switch-when="PullRequestReviewCommentEvent">
