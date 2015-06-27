@@ -2,19 +2,16 @@
 <html lang="en" ng-app="involved">
 <head>
   <title>Involved</title>
-  <meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self'; style-src 'self' 'unsafe-inline';">
+  <meta http-equiv="Content-Security-Policy" content="style-src 'self' 'unsafe-inline';">
   <link rel="stylesheet" href="static/components/octicons/octicons/octicons.css">
   <link rel="stylesheet" href="static/components/primer-css/css/primer.css">
   <link rel="stylesheet" href="static/components/primer-markdown/dist/user-content.css">
   <link rel="stylesheet" href="static/css/style.css">
 </head>
 <body class="flex-container flex-container-row" ng-controller="TimelineCtrl"  tabindex="-1">
-<nav class="menus">
-  <div class="profile">
-    <img ng-src="{{me.avatar_url}}v=3&s=45" class="avatar avatar-small me">
-    <span>{{me.login}}</span>
-  </div>
-</nav>
+
+  <nav class="menus" id="menu"></nav>
+
 <section class="main-contents flex-container">
   <div class="timeline" when-scrolled="loadMore()">
     <div class="timeline-cell flex-container flex-container-row" ng-repeat="t in timeline" ng-click="showEvent(t)">
@@ -212,12 +209,15 @@
   </div>
 </section>
 
-<script src="renderer/init.js"></script>
-<script src="static/components/angular/angular.js"></script>
-<script src="static/components/angular-resource/angular-resource.js"></script>
-<script src="static/components/moment/moment.js"></script>
-<script src="static/components/markdown-it/dist/markdown-it.js"></script>
-<script src="static/components/markdown-it-emoji/dist/markdown-it-emoji.js"></script>
-<script src="renderer/app.js"></script>
+  <script src="renderer/init.js"></script>
+  <script src="static/components/angular/angular.js"></script>
+  <script src="static/components/angular-resource/angular-resource.js"></script>
+  <script src="static/components/react/react-with-addons.js"></script>
+  <script src="static/components/react/JSXTransformer.js"></script>
+  <script src="static/components/moment/moment.js"></script>
+  <script src="static/components/markdown-it/dist/markdown-it.js"></script>
+  <script src="static/components/markdown-it-emoji/dist/markdown-it-emoji.js"></script>
+  <script src="renderer/app.js"></script>
+  <script type="text/jsx" src="renderer/views/Menu.jsx"></script>
 </body>
 </html>
