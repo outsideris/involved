@@ -5,9 +5,10 @@ var app = app || {};
 
   // timeline events
   var CreateEvent = React.createClass({
+    handleClick: function() { this.props.onClick(this); },
     render: function() {
       return (
-        <div className="timeline-cell flex-container flex-container-row">
+        <div className="timeline-cell flex-container flex-container-row" onClick={this.handleClick}>
           <div className="cell-type">
             <span className="octicon octicon-git-branch"></span>
           </div>
@@ -26,9 +27,10 @@ var app = app || {};
     }
   });
   var IssueCommentEvent = React.createClass({
+    handleClick: function() { this.props.onClick(this); },
     render: function() {
       return (
-        <div className="timeline-cell flex-container flex-container-row">
+        <div className="timeline-cell flex-container flex-container-row" onClick={this.handleClick}>
           <div className="cell-type">
             <span className="octicon octicon-comment-discussion"></span>
           </div>
@@ -47,10 +49,11 @@ var app = app || {};
     }
   });
   var PushEvent = React.createClass({
+    handleClick: function() { this.props.onClick(this); },
     render: function() {
       var cmt = this.props.data.payload.size > 1 ? 'commits' : 'commit';
       return (
-        <div className="timeline-cell flex-container flex-container-row">
+        <div className="timeline-cell flex-container flex-container-row" onClick={this.handleClick}>
           <div className="cell-type">
             <span className="octicon octicon-git-commit"></span>
           </div>
@@ -69,10 +72,11 @@ var app = app || {};
     }
   });
   var PullRequestEvent = React.createClass({
+    handleClick: function() { this.props.onClick(this); },
     render: function() {
       var action = this.props.data.payload.pull_request.merged ? 'merged' : this.props.data.payload.action;
       return (
-        <div className="timeline-cell flex-container flex-container-row">
+        <div className="timeline-cell flex-container flex-container-row" onClick={this.handleClick}>
           <div className="cell-type">
             <span className="octicon octicon-git-pull-request"></span>
           </div>
@@ -92,9 +96,10 @@ var app = app || {};
     }
   });
   var PullRequestReviewCommentEvent = React.createClass({
+    handleClick: function() { this.props.onClick(this); },
     render: function() {
       return (
-        <div className="timeline-cell flex-container flex-container-row">
+        <div className="timeline-cell flex-container flex-container-row" onClick={this.handleClick}>
           <div className="cell-type">
             <span className="octicon octicon-comment-discussion"></span>
           </div>
@@ -114,9 +119,10 @@ var app = app || {};
     }
   });
   var CommitCommentEvent = React.createClass({
+    handleClick: function() { this.props.onClick(this); },
     render: function() {
       return (
-        <div className="timeline-cell flex-container flex-container-row">
+        <div className="timeline-cell flex-container flex-container-row" onClick={this.handleClick}>
           <div className="cell-type">
             <span className="octicon octicon-comment-discussion"></span>
           </div>
@@ -135,11 +141,12 @@ var app = app || {};
     }
   });
   var ReleaseEvent = React.createClass({
+    handleClick: function() { this.props.onClick(this); },
     render: function() {
       var rName = this.props.data.payload.release.name ?
                   <div className="title">{this.props.data.payload.release.name}</div> : '';
       return (
-        <div className="timeline-cell flex-container flex-container-row">
+        <div className="timeline-cell flex-container flex-container-row" onClick={this.handleClick}>
           <div className="cell-type">
             <span className="octicon octicon-tag"></span>
           </div>
@@ -157,9 +164,10 @@ var app = app || {};
     }
   });
   var DeleteEvent = React.createClass({
+    handleClick: function() { this.props.onClick(this); },
     render: function() {
       return (
-        <div className="timeline-cell flex-container flex-container-row">
+        <div className="timeline-cell flex-container flex-container-row" onClick={this.handleClick}>
           <div className="cell-type">
             <span className="octicon octicon-trashcan"></span>
           </div>
@@ -177,9 +185,10 @@ var app = app || {};
     }
   });
   var IssuesEvent = React.createClass({
+    handleClick: function() { this.props.onClick(this); },
     render: function() {
       return (
-        <div className="timeline-cell flex-container flex-container-row">
+        <div className="timeline-cell flex-container flex-container-row" onClick={this.handleClick}>
           <div className="cell-type">
             <span className="octicon octicon-issue-opened"></span>
           </div>
@@ -199,29 +208,43 @@ var app = app || {};
   });
 
   var TimelineList = React.createClass({
+    handleClick: function(comp) { this.props.onClick(comp); },
+    //events: {
+    //  IssuesEvent: <IssuesEvent data={event} onClick={self.handleClick} />,
+    //  CreateEvent: <CreateEvent data={event} onClick={self.handleClick} />,
+    //  IssueCommentEvent: <IssueCommentEvent data={event} onClick={self.handleClick} />,
+    //  PushEvent: <PushEvent data={event} onClick={self.handleClick} />,
+    //  PullRequestEvent: <PullRequestEvent data={event} onClick={self.handleClick} />,
+    //  PullRequestReviewCommentEvent: <PullRequestReviewCommentEvent data={event} onClick={self.handleClick} />,
+    //  CommitCommentEvent: <CommitCommentEvent data={event} onClick={self.handleClick} />,
+    //  ReleaseEvent: <ReleaseEvent data={event} onClick={self.handleClick} />,
+    //  DeleteEvent: <DeleteEvent data={event} onClick={self.handleClick} />,
+    //},
     render: function() {
-      var events = this.props.data.map(function(event) {
+      var self = this;
+      var events = this.props.list.map(function(event) {
+        //var node = self.events[event.type];
         var node;
         if (event.type === 'IssuesEvent') {
-          node = <IssuesEvent data={event} />;
+          node = <IssuesEvent data={event} onClick={self.handleClick} />;
         } else if (event.type === 'CreateEvent') {
-          node = <CreateEvent data={event} />;
+          node = <CreateEvent data={event} onClick={self.handleClick} />;
         } else if (event.type === 'IssueCommentEvent') {
-          node = <IssueCommentEvent data={event} />;
+          node = <IssueCommentEvent data={event} onClick={self.handleClick} />;
         } else if (event.type === 'PushEvent') {
-          node = <PushEvent data={event} />;
+          node = <PushEvent data={event} onClick={self.handleClick} />;
         } else if (event.type === 'PullRequestEvent') {
-          node = <PullRequestEvent data={event} />;
+          node = <PullRequestEvent data={event} onClick={self.handleClick} />;
         } else if (event.type === 'PullRequestReviewCommentEvent') {
-          node = <PullRequestReviewCommentEvent data={event} />;
+          node = <PullRequestReviewCommentEvent data={event} onClick={self.handleClick} />;
         } else if (event.type === 'CommitCommentEvent') {
-          node = <CommitCommentEvent data={event} />;
+          node = <CommitCommentEvent data={event} onClick={self.handleClick} />;
         } else if (event.type === 'ReleaseEvent') {
-          node = <ReleaseEvent data={event} />;
+          node = <ReleaseEvent data={event} onClick={self.handleClick} />;
         } else if (event.type === 'DeleteEvent') {
-          node = <DeleteEvent data={event} />;
+          node = <DeleteEvent data={event} onClick={self.handleClick} />;
         } else if (event.type === 'IssuesEvent') {
-          node = <IssuesEvent data={event} />;
+          node = <IssuesEvent data={event} onClick={self.handleClick} />;
         }
 
         return (
@@ -233,6 +256,181 @@ var app = app || {};
           {events}
         </div>
       );
+    }
+  });
+
+  // event detail
+  var IssueEventDetail = React.createClass({
+    render: function() {
+      return (
+        <div>
+          <div className="d-head">
+            <h2 className="d-repo"><span className="mega-octicon octicon-repo"></span>{this.props.data.repo.name}</h2>
+            <h1>{this.props.data.payload.issue.title} <span className="issue-num">#{this.props.data.payload.issue.number}</span></h1>
+            <div>
+              <span className="state state-{this.props.data.payload.issue.state}">{this.props.data.payload.issue.state}</span>
+              <span className="author">{this.props.data.payload.issue.user.login}</span>
+              <span className="meta">
+                opened this issue {moment(this.props.data.payload.issue.created_at).fromNow()} - {this.props.data.payload.issue.comments} comments
+              </span>
+            </div>
+          </div>
+          <div className="d-body">
+            <div className="comment">
+              <img src={this.props.data.payload.issue.user.avatar_url+'v=3&s=45'} className="avatar avatar-small" />
+              <div className="comment-head">
+                <span className="author">{this.props.data.payload.issue.user.login}</span>
+                <span className="meta"> commented {moment(this.props.data.payload.issue.created_at).fromNow()}</span>
+              </div>
+              <div className="comment-body markdown-body">{this.props.data.payload.issue.body}</div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  });
+  var IssueCommentEventDetail = React.createClass({
+    render: function() {
+      return (
+        <div>
+          <div className="d-head">
+            <h2 className="d-repo"><span className="mega-octicon octicon-repo"></span>{this.props.data.repo.name}</h2>
+            <h1>{this.props.data.payload.issue.title} <span className="issue-num">#{this.props.data.payload.issue.number}</span></h1>
+            <div>
+              <span className="state state-{this.props.data.payload.issue.state}">{this.props.data.payload.issue.state}</span>
+              <span className="author">{this.props.data.payload.issue.user.login}</span>
+              <span className="meta">
+                opened this issue {moment(this.props.data.payload.issue.created_at).fromNow()} - {this.props.data.payload.issue.comments} comments
+              </span>
+            </div>
+          </div>
+          <div className="d-body">
+            <div className="comment">
+              <img src={this.props.data.payload.issue.user.avatar_url+'v=3&s=45'} className="avatar avatar-small" />
+              <div className="comment-head">
+                <span className="author">{this.props.data.payload.issue.user.login}</span>
+                <span className="meta"> commented {moment(this.props.data.payload.issue.created_at).fromNow()}</span>
+              </div>
+              <div className="comment-body markdown-body">{this.props.data.payload.issue.body}</div>
+            </div>
+
+            <span className="hidden-text-expander expander"><a href="#">&hellip;</a></span>
+
+            <div className="comment">
+              <img src={this.props.data.payload.comment.user.avatar_url+'v=3&s=45'} className="avatar avatar-small" />
+              <div className="comment-head">
+                <span className="author">{this.props.data.payload.comment.user.login}</span>
+                <span className="meta"> commented {moment(this.props.data.payload.comment.created_at).fromNow()}</span>
+              </div>
+              <div className="comment-body markdown-body">{this.props.data.payload.comment.body}</div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  });
+  var PullRequestEventDetail = React.createClass({
+    render: function() {
+      var mergedTime = this.props.data.payload.pull_request.state === 'merged' ?
+                       <span>moment(this.props.data.payload.pull_request.created_at).fromNow()</span> : '';
+      return (
+        <div>
+          <div className="d-head">
+            <h2 className="d-repo"><span className="mega-octicon octicon-repo"></span>{this.props.data.repo.name}</h2>
+            <h1>{this.props.data.payload.pull_request.title} <span className="issue-num">#{this.props.data.payload.pull_request.number}</span></h1>
+            <div>
+              <span className="state state-{this.props.data.payload.pull_request.state}">{this.props.data.payload.pull_request.state}</span>
+              <span className="author">{this.props.data.payload.pull_request.user.login}</span>
+              <span className="meta">
+                wants to merge commits into
+                <span className="commit-ref">{this.props.data.payload.pull_request.base.label}</span>
+                from
+                <span className="commit-ref">{this.props.data.payload.pull_request.head.label}</span>
+                {mergedTime}
+              </span>
+            </div>
+          </div>
+          <div className="d-body">
+            <div className="comment">
+              <img src={this.props.data.payload.pull_request.user.avatar_url+'v=3&s=45'} className="avatar avatar-small" />
+              <div className="comment-head">
+                <span className="author">{this.props.data.payload.pull_request.user.login}</span>
+                <span className="meta"> commented {moment(this.props.data.payload.pull_request.created_at).fromNow()}</span>
+              </div>
+              <div className="comment-body markdown-body">{this.props.data.payload.pull_request.body}</div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  });
+  var PullRequestReviewCommentEventDetail = React.createClass({
+    render: function() {
+      var mergedTime = this.props.data.payload.pull_request.state === 'merged' ?
+                       <span>moment(this.props.data.payload.pull_request.created_at).fromNow()</span> : '';
+      return (
+        <div>
+          <div className="d-head">
+            <h2 className="d-repo"><span className="mega-octicon octicon-repo"></span>{this.props.data.repo.name}</h2>
+            <h1>{this.props.data.payload.pull_request.title} <span className="issue-num">#{this.props.data.payload.pull_request.number}</span></h1>
+            <div>
+              <span className="state state-{this.props.data.payload.pull_request.state}">{this.props.data.payload.pull_request.state}</span>
+              <span className="author">{this.props.data.payload.pull_request.user.login}</span>
+              <span className="meta">
+                wants to merge commits into
+                <span className="commit-ref">{this.props.data.payload.pull_request.base.label}</span>
+                from
+                <span className="commit-ref">{this.props.data.payload.pull_request.head.label}</span>
+                {mergedTime}
+              </span>
+            </div>
+          </div>
+          <div className="d-body">
+            <div className="comment">
+              <img src={this.props.data.payload.pull_request.user.avatar_url+'v=3&s=45'} className="avatar avatar-small" />
+              <div className="comment-head">
+                <span className="author">{this.props.data.payload.pull_request.user.login}</span>
+                <span className="meta"> commented {moment(this.props.data.payload.pull_request.created_at).fromNow()}</span>
+              </div>
+              <div className="comment-body markdown-body">{this.props.data.payload.pull_request.body}</div>
+            </div>
+            <span className="hidden-text-expander expander"><a href="#">&hellip;</a></span>
+            <div className="comment">
+              <img src={this.props.data.payload.comment.user.avatar_url+'v=3&s=45'} className="avatar avatar-small" />
+              <div className="comment-head">
+                <span className="author">{this.props.data.payload.comment.user.login}</span>
+                <span className="meta"> commented {moment(this.props.data.payload.comment.created_at).fromNow()}</span>
+              </div>
+              <div className="comment-body markdown-body">{this.props.data.payload.pull_request.body}</div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  });
+
+
+  var TimelineDetail = React.createClass({
+    render: function() {
+      console.log(this.props)
+      var node;
+      if (this.props.item && this.props.item.type === 'IssuesEvent') {
+        node = <IssueEventDetail data={this.props.item} onClick={self.handleClick} />;
+      } else if (this.props.item && this.props.item.type === 'IssueCommentEvent') {
+        node = <IssueCommentEventDetail data={this.props.item} onClick={self.handleClick} />;
+      } else if (this.props.item && this.props.item.type === 'PullRequestEvent') {
+        node = <PullRequestEventDetail data={this.props.item} onClick={self.handleClick} />;
+      } else if (this.props.item && this.props.item.type === 'PullRequestReviewCommentEvent') {
+        node = <PullRequestReviewCommentEventDetail data={this.props.item} onClick={self.handleClick} />;
+      } else {
+        node = <div className="detail"></div>;
+      }
+
+      return (
+        <div className="detail">
+          {node}
+        </div>
+      )
     }
   });
 
@@ -248,10 +446,14 @@ var app = app || {};
         self.setState({data: list});
       });
     },
+    handleClick: function(comp) {
+      this.setState({item: comp.props.data});
+    },
     render: function () {
       return (
-        <div id="repository">
-          <TimelineList data={this.state.data} />
+        <div id="repository" className="flex-container">
+          <TimelineList list={this.state.data} onClick={this.handleClick} />
+          <TimelineDetail item={this.state.item} />
         </div>
       );
     }
