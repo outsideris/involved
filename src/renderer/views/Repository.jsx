@@ -3,6 +3,17 @@ var app = app || {};
 (function() {
   'use strict';
 
+  var MarkdownParser = function() {
+    var markdown = window.markdownit();
+    this.render = function(text) {
+      if (text && text.trim() !== '') {
+        return markdown.render(text);
+      } else {
+        return '<p className="text-muted">No description provided.</p>';
+      }
+    };
+  };
+
   // timeline events
   var CreateEvent = React.createClass({
     handleClick: function() { this.props.onClick(this); },
@@ -261,6 +272,9 @@ var app = app || {};
 
   // event detail
   var IssueEventDetail = React.createClass({
+    componentWillMount: function () {
+      this.md = new MarkdownParser();
+    },
     render: function() {
       return (
         <div>
@@ -282,7 +296,7 @@ var app = app || {};
                 <span className="author">{this.props.data.payload.issue.user.login}</span>
                 <span className="meta"> commented {moment(this.props.data.payload.issue.created_at).fromNow()}</span>
               </div>
-              <div className="comment-body markdown-body">{this.props.data.payload.issue.body}</div>
+              <div className="comment-body markdown-body" dangerouslySetInnerHTML={{__html: this.md.render(this.props.data.payload.issue.body)}}></div>
             </div>
           </div>
         </div>
@@ -290,6 +304,9 @@ var app = app || {};
     }
   });
   var IssueCommentEventDetail = React.createClass({
+    componentWillMount: function () {
+      this.md = new MarkdownParser();
+    },
     render: function() {
       return (
         <div>
@@ -311,7 +328,7 @@ var app = app || {};
                 <span className="author">{this.props.data.payload.issue.user.login}</span>
                 <span className="meta"> commented {moment(this.props.data.payload.issue.created_at).fromNow()}</span>
               </div>
-              <div className="comment-body markdown-body">{this.props.data.payload.issue.body}</div>
+              <div className="comment-body markdown-body" dangerouslySetInnerHTML={{__html: this.md.render(this.props.data.payload.issue.body)}}></div>
             </div>
 
             <span className="hidden-text-expander expander"><a href="#">&hellip;</a></span>
@@ -322,7 +339,7 @@ var app = app || {};
                 <span className="author">{this.props.data.payload.comment.user.login}</span>
                 <span className="meta"> commented {moment(this.props.data.payload.comment.created_at).fromNow()}</span>
               </div>
-              <div className="comment-body markdown-body">{this.props.data.payload.comment.body}</div>
+              <div className="comment-body markdown-body" dangerouslySetInnerHTML={{__html: this.md.render(this.props.data.payload.comment.body)}}></div>
             </div>
           </div>
         </div>
@@ -330,6 +347,9 @@ var app = app || {};
     }
   });
   var PullRequestEventDetail = React.createClass({
+    componentWillMount: function () {
+      this.md = new MarkdownParser();
+    },
     render: function() {
       var mergedTime = this.props.data.payload.pull_request.state === 'merged' ?
                        <span>moment(this.props.data.payload.pull_request.created_at).fromNow()</span> : '';
@@ -357,7 +377,7 @@ var app = app || {};
                 <span className="author">{this.props.data.payload.pull_request.user.login}</span>
                 <span className="meta"> commented {moment(this.props.data.payload.pull_request.created_at).fromNow()}</span>
               </div>
-              <div className="comment-body markdown-body">{this.props.data.payload.pull_request.body}</div>
+              <div className="comment-body markdown-body" dangerouslySetInnerHTML={{__html: this.md.render(this.props.data.payload.comment.body)}}></div>
             </div>
           </div>
         </div>
@@ -365,6 +385,9 @@ var app = app || {};
     }
   });
   var PullRequestReviewCommentEventDetail = React.createClass({
+    componentWillMount: function () {
+      this.md = new MarkdownParser();
+    },
     render: function() {
       var mergedTime = this.props.data.payload.pull_request.state === 'merged' ?
                        <span>moment(this.props.data.payload.pull_request.created_at).fromNow()</span> : '';
@@ -392,7 +415,7 @@ var app = app || {};
                 <span className="author">{this.props.data.payload.pull_request.user.login}</span>
                 <span className="meta"> commented {moment(this.props.data.payload.pull_request.created_at).fromNow()}</span>
               </div>
-              <div className="comment-body markdown-body">{this.props.data.payload.pull_request.body}</div>
+              <div className="comment-body markdown-body" dangerouslySetInnerHTML={{__html: this.md.render(this.props.data.payload.pull_request.body)}}></div>
             </div>
             <span className="hidden-text-expander expander"><a href="#">&hellip;</a></span>
             <div className="comment">
@@ -401,14 +424,13 @@ var app = app || {};
                 <span className="author">{this.props.data.payload.comment.user.login}</span>
                 <span className="meta"> commented {moment(this.props.data.payload.comment.created_at).fromNow()}</span>
               </div>
-              <div className="comment-body markdown-body">{this.props.data.payload.pull_request.body}</div>
+              <div className="comment-body markdown-body" dangerouslySetInnerHTML={{__html: this.md.render(this.props.data.payload.comment.body)}}></div>
             </div>
           </div>
         </div>
       );
     }
   });
-
 
   var TimelineDetail = React.createClass({
     render: function() {
