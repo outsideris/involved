@@ -44,7 +44,7 @@ module.exports = (function() {
       ).then(function(result) {
           result.forEach(function(data) {
             data.body.forEach(function(evt) {
-              if (evt.type !== 'ForkEvent' && evt.type !== 'WatchEvent') {
+              if (evt.type !== 'ForkEvent' && evt.type !== 'WatchEvent' && evt.type !== 'GollumEvent') {
                 db.push(evt);
               }
             });
