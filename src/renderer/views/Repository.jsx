@@ -282,7 +282,7 @@ var app = app || {};
             <h2 className="d-repo"><span className="mega-octicon octicon-repo"></span>{this.props.data.repo.name}</h2>
             <h1>{this.props.data.payload.issue.title} <span className="issue-num">#{this.props.data.payload.issue.number}</span></h1>
             <div>
-              <span className="state state-{this.props.data.payload.issue.state}">{this.props.data.payload.issue.state}</span>
+              <span className={'state state-' + this.props.data.payload.issue.state}>{this.props.data.payload.issue.state} </span>
               <span className="author">{this.props.data.payload.issue.user.login}</span>
               <span className="meta">
                 opened this issue {moment(this.props.data.payload.issue.created_at).fromNow()} - {this.props.data.payload.issue.comments} comments
@@ -314,7 +314,7 @@ var app = app || {};
             <h2 className="d-repo"><span className="mega-octicon octicon-repo"></span>{this.props.data.repo.name}</h2>
             <h1>{this.props.data.payload.issue.title} <span className="issue-num">#{this.props.data.payload.issue.number}</span></h1>
             <div>
-              <span className="state state-{this.props.data.payload.issue.state}">{this.props.data.payload.issue.state}</span>
+              <span className={'state state-'+this.props.data.payload.issue.state}>{this.props.data.payload.issue.state}</span>
               <span className="author">{this.props.data.payload.issue.user.login}</span>
               <span className="meta">
                 opened this issue {moment(this.props.data.payload.issue.created_at).fromNow()} - {this.props.data.payload.issue.comments} comments
@@ -359,7 +359,7 @@ var app = app || {};
             <h2 className="d-repo"><span className="mega-octicon octicon-repo"></span>{this.props.data.repo.name}</h2>
             <h1>{this.props.data.payload.pull_request.title} <span className="issue-num">#{this.props.data.payload.pull_request.number}</span></h1>
             <div>
-              <span className="state state-{this.props.data.payload.pull_request.state}">{this.props.data.payload.pull_request.state}</span>
+              <span className={'state state-'+this.props.data.payload.pull_request.state}>{this.props.data.payload.pull_request.state}</span>
               <span className="author">{this.props.data.payload.pull_request.user.login}</span>
               <span className="meta">
                 wants to merge commits into
@@ -397,7 +397,7 @@ var app = app || {};
             <h2 className="d-repo"><span className="mega-octicon octicon-repo"></span>{this.props.data.repo.name}</h2>
             <h1>{this.props.data.payload.pull_request.title} <span className="issue-num">#{this.props.data.payload.pull_request.number}</span></h1>
             <div>
-              <span className="state state-{this.props.data.payload.pull_request.state}">{this.props.data.payload.pull_request.state}</span>
+              <span className={'state state-'+this.props.data.payload.pull_request.state}>{this.props.data.payload.pull_request.state}</span>
               <span className="author">{this.props.data.payload.pull_request.user.login}</span>
               <span className="meta">
                 wants to merge commits into
