@@ -4,7 +4,17 @@ var app = app || {};
   'use strict';
 
   var MarkdownParser = function() {
-    var markdown = window.markdownit();
+    var markdown = window.markdownit(),
+        ipc = require('ipc');
+    ipc.send('github.emojis');
+    ipc.on('github.emojis', function(emojis) {
+      if (!markdown.renderer.rules.emoji) { markdown.use(window.markdownitEmoji);  }
+      markdown.renderer.rules.emoji = function(token, idx) {
+        var code = token[idx].markup;
+        return '<img title=":'+code+':" alt=":'+code+':" src="'+emojis[code]+'" class="emoji">';
+      };
+    });
+
     this.render = function(text) {
       if (text && text.trim() !== '') {
         return markdown.render(text);
@@ -97,8 +107,7 @@ var app = app || {};
             <img src={this.props.data.actor.avatar_url+'v=3&s=40'} className="avatar avatar-small" />
             <a href={this.props.data.actor.url} className="username">{this.props.data.actor.login}</a>
             <span>
-              <span>{action}</span>
-              pull request #{this.props.data.payload.pull_request.number}
+              <span>{action}</span> pull request #{this.props.data.payload.pull_request.number}
               <div className="title">"{this.props.data.payload.pull_request.title}"</div>
             </span>
           </div>
@@ -434,16 +443,17 @@ var app = app || {};
 
   var TimelineDetail = React.createClass({
     render: function() {
-      console.log(this.props)
       var node;
       if (this.props.item && this.props.item.type === 'IssuesEvent') {
-        node = <IssueEventDetail data={this.props.item} onClick={self.handleClick} />;
+        node = <IssueEventDetail data={this.props.item} />;
       } else if (this.props.item && this.props.item.type === 'IssueCommentEvent') {
-        node = <IssueCommentEventDetail data={this.props.item} onClick={self.handleClick} />;
+        node = <IssueCommentEventDetail data={this.props.item} />;
       } else if (this.props.item && this.props.item.type === 'PullRequestEvent') {
-        node = <PullRequestEventDetail data={this.props.item} onClick={self.handleClick} />;
+        node = <PullRequestEventDetail data={this.props.item} />;
       } else if (this.props.item && this.props.item.type === 'PullRequestReviewCommentEvent') {
-        node = <PullRequestReviewCommentEventDetail data={this.props.item} onClick={self.handleClick} />;
+        node = <PullRequestReviewCommentEventDetail data={this.props.item} />;
+      } else if (this.props.item && this.props.item.type === 'CommitCommentEvent') {
+        node = <CommitCommentEventDetail data={this.props.item} />;
       } else {
         node = <div className="detail"></div>;
       }
