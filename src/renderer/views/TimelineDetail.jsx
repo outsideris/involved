@@ -130,7 +130,7 @@ var app = app || {};
                 <span className="author">{this.props.data.payload.pull_request.user.login}</span>
                 <span className="meta"> commented {moment(this.props.data.payload.pull_request.created_at).fromNow()}</span>
               </div>
-              <div className="comment-body markdown-body" dangerouslySetInnerHTML={{__html: this.md.render(this.props.data.payload.comment.body)}}></div>
+              <div className="comment-body markdown-body" dangerouslySetInnerHTML={{__html: this.md.render(this.props.data.payload.pull_request.body)}}></div>
             </div>
           </div>
         </div>
@@ -185,6 +185,38 @@ var app = app || {};
     }
   });
 
+  var PushEventEventDetail = React.createClass({
+    componentWillMount: function () {
+      this.md = new MarkdownParser();
+    },
+    render: function() {
+      var data = this.props.data;
+      // TODO: fetch commit info via api
+      var commits = this.props.data.payload.commits.map(function(c) {
+        return (
+          <div className="commit-header">
+            <h2>{c.message}</h2>
+            <span className="octicon octicon-git-branch"></span> {data.payload.ref.replace('refs/heads/', '')}
+            <div className="commit-body">
+              <img src={data.actor.avatar_url+'v=3&s=45'} className="avatar avatar-small" />
+              {data.actor.login}
+              <span className="meta"> authored {moment(data.created_at).fromNow()}</span>
+            </div>
+          </div>
+        );
+      }).reverse();
+
+      return (
+        <div>
+          <div className="d-head">
+            <h2 className="d-repo"><span className="mega-octicon octicon-repo"></span>{this.props.data.repo.name}</h2>
+          </div>
+          {commits}
+        </div>
+      );
+    }
+  });
+
   app.TimelineDetail = React.createClass({
     render: function() {
       var node;
@@ -198,6 +230,8 @@ var app = app || {};
         node = <PullRequestReviewCommentEventDetail data={this.props.item} />;
       } else if (this.props.item && this.props.item.type === 'CommitCommentEvent') {
         node = <CommitCommentEventDetail data={this.props.item} />;
+      } else if (this.props.item && this.props.item.type === 'PushEvent') {
+        node = <PushEventEventDetail data={this.props.item} />;
       } else {
         node = <div className="detail"></div>;
       }

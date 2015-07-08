@@ -62,8 +62,8 @@ var app = app || {};
             <img src={this.props.data.actor.avatar_url+'v=3&s=40'} className="avatar avatar-small" />
             <a href={this.props.data.actor.url} className="username">{this.props.data.actor.login}</a>
             <span>
-              pushed {this.props.data.payload.size} <span>{cmt}</span>
-              to {this.props.data.payload.ref.replace('refs/heads/', '')}
+              pushed {this.props.data.payload.size} <span>{cmt}</span> to
+              {this.props.data.payload.ref.replace('refs/heads/', '')}
             </span>
           </div>
         </div>
