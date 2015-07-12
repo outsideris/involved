@@ -3,7 +3,9 @@ var app = app || {};
 (function() {
   'use strict';
 
-  var CreateEvent = React.createClass({
+  var eventTypes = {};
+
+  eventTypes.CreateEvent = React.createClass({
     handleClick: function() { this.props.onClick(this); },
     render: function() {
       return (
@@ -25,7 +27,7 @@ var app = app || {};
       );
     }
   });
-  var IssueCommentEvent = React.createClass({
+  eventTypes.IssueCommentEvent = React.createClass({
     handleClick: function() { this.props.onClick(this); },
     render: function() {
       return (
@@ -47,7 +49,7 @@ var app = app || {};
       );
     }
   });
-  var PushEvent = React.createClass({
+  eventTypes.PushEvent = React.createClass({
     handleClick: function() { this.props.onClick(this); },
     render: function() {
       var cmt = this.props.data.payload.size > 1 ? 'commits' : 'commit';
@@ -70,7 +72,7 @@ var app = app || {};
       );
     }
   });
-  var PullRequestEvent = React.createClass({
+  eventTypes.PullRequestEvent = React.createClass({
     handleClick: function() { this.props.onClick(this); },
     render: function() {
       var action = this.props.data.payload.pull_request.merged ? 'merged' : this.props.data.payload.action;
@@ -93,7 +95,7 @@ var app = app || {};
       );
     }
   });
-  var PullRequestReviewCommentEvent = React.createClass({
+  eventTypes.PullRequestReviewCommentEvent = React.createClass({
     handleClick: function() { this.props.onClick(this); },
     render: function() {
       return (
@@ -116,7 +118,7 @@ var app = app || {};
       );
     }
   });
-  var CommitCommentEvent = React.createClass({
+  eventTypes.CommitCommentEvent = React.createClass({
     handleClick: function() { this.props.onClick(this); },
     render: function() {
       return (
@@ -138,7 +140,7 @@ var app = app || {};
       );
     }
   });
-  var ReleaseEvent = React.createClass({
+  eventTypes.ReleaseEvent = React.createClass({
     handleClick: function() { this.props.onClick(this); },
     render: function() {
       var rName = this.props.data.payload.release.name ?
@@ -161,7 +163,7 @@ var app = app || {};
       );
     }
   });
-  var DeleteEvent = React.createClass({
+  eventTypes.DeleteEvent = React.createClass({
     handleClick: function() { this.props.onClick(this); },
     render: function() {
       return (
@@ -182,7 +184,7 @@ var app = app || {};
       );
     }
   });
-  var IssuesEvent = React.createClass({
+  eventTypes.IssuesEvent = React.createClass({
     handleClick: function() { this.props.onClick(this); },
     render: function() {
       return (
@@ -210,31 +212,9 @@ var app = app || {};
     render: function() {
       var self = this;
       var events = this.props.list.map(function(event) {
-        var node;
-        if (event.type === 'IssuesEvent') {
-          node = <IssuesEvent data={event} onClick={self.handleClick} />;
-        } else if (event.type === 'CreateEvent') {
-          node = <CreateEvent data={event} onClick={self.handleClick} />;
-        } else if (event.type === 'IssueCommentEvent') {
-          node = <IssueCommentEvent data={event} onClick={self.handleClick} />;
-        } else if (event.type === 'PushEvent') {
-          node = <PushEvent data={event} onClick={self.handleClick} />;
-        } else if (event.type === 'PullRequestEvent') {
-          node = <PullRequestEvent data={event} onClick={self.handleClick} />;
-        } else if (event.type === 'PullRequestReviewCommentEvent') {
-          node = <PullRequestReviewCommentEvent data={event} onClick={self.handleClick} />;
-        } else if (event.type === 'CommitCommentEvent') {
-          node = <CommitCommentEvent data={event} onClick={self.handleClick} />;
-        } else if (event.type === 'ReleaseEvent') {
-          node = <ReleaseEvent data={event} onClick={self.handleClick} />;
-        } else if (event.type === 'DeleteEvent') {
-          node = <DeleteEvent data={event} onClick={self.handleClick} />;
-        } else if (event.type === 'IssuesEvent') {
-          node = <IssuesEvent data={event} onClick={self.handleClick} />;
-        }
-
+        var T = eventTypes[event.type];
         return (
-          {node}
+          <T data={event} onClick={self.handleClick} />
         );
       });
       return (

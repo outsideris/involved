@@ -24,7 +24,9 @@ var app = app || {};
     };
   };
 
-  var IssueEventDetail = React.createClass({
+  var eventTypes = {};
+
+  eventTypes.IssuesEventDetail = React.createClass({
     componentWillMount: function () {
       this.md = new MarkdownParser();
     },
@@ -56,7 +58,7 @@ var app = app || {};
       );
     }
   });
-  var IssueCommentEventDetail = React.createClass({
+  eventTypes.IssueCommentEventDetail = React.createClass({
     componentWillMount: function () {
       this.md = new MarkdownParser();
     },
@@ -99,7 +101,7 @@ var app = app || {};
       );
     }
   });
-  var PullRequestEventDetail = React.createClass({
+  eventTypes.PullRequestEventDetail = React.createClass({
     componentWillMount: function () {
       this.md = new MarkdownParser();
     },
@@ -137,7 +139,7 @@ var app = app || {};
       );
     }
   });
-  var PullRequestReviewCommentEventDetail = React.createClass({
+  eventTypes.PullRequestReviewCommentEventDetail = React.createClass({
     componentWillMount: function () {
       this.md = new MarkdownParser();
     },
@@ -185,8 +187,8 @@ var app = app || {};
     }
   });
 
-  var PushEventEventDetail = React.createClass({
-    componentWillMount: function () {
+  eventTypes.PushEventDetail = React.createClass({
+    componentWillMount: function() {
       this.md = new MarkdownParser();
     },
     render: function() {
@@ -220,18 +222,9 @@ var app = app || {};
   app.TimelineDetail = React.createClass({
     render: function() {
       var node;
-      if (this.props.item && this.props.item.type === 'IssuesEvent') {
-        node = <IssueEventDetail data={this.props.item} />;
-      } else if (this.props.item && this.props.item.type === 'IssueCommentEvent') {
-        node = <IssueCommentEventDetail data={this.props.item} />;
-      } else if (this.props.item && this.props.item.type === 'PullRequestEvent') {
-        node = <PullRequestEventDetail data={this.props.item} />;
-      } else if (this.props.item && this.props.item.type === 'PullRequestReviewCommentEvent') {
-        node = <PullRequestReviewCommentEventDetail data={this.props.item} />;
-      } else if (this.props.item && this.props.item.type === 'CommitCommentEvent') {
-        node = <CommitCommentEventDetail data={this.props.item} />;
-      } else if (this.props.item && this.props.item.type === 'PushEvent') {
-        node = <PushEventEventDetail data={this.props.item} />;
+      if (this.props.item) {
+        var T = eventTypes[this.props.item.type + 'Detail'];
+        node = <T data={this.props.item} />;
       } else {
         node = <div className="detail"></div>;
       }
