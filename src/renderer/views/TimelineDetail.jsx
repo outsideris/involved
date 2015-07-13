@@ -22,6 +22,10 @@ var app = app || {};
         return '<p className="text-muted">No description provided.</p>';
       }
     };
+
+    this.normalize = function(text) {
+      return text.replace(/\n/g, '<br>');
+    };
   };
 
   var eventTypes = {};
@@ -188,21 +192,63 @@ var app = app || {};
   });
 
   eventTypes.PushEventDetail = React.createClass({
+    getInitialState: function() {
+      return {commits: []};
+    },
     componentWillMount: function() {
       this.md = new MarkdownParser();
     },
+    componentDidMount: function() {
+      var self = this;
+      $.each(this.props.data.payload.commits.reverse(), function(c) {
+        $.getJSON(this.url, function(data) {
+          self.state.commits[c] = data;
+          if (self.isMounted()) {
+            self.setState({
+              commits: self.state.commits
+            });
+          }
+        });
+      });
+    },
     render: function() {
-      var data = this.props.data;
-      // TODO: fetch commit info via api
-      var commits = this.props.data.payload.commits.map(function(c) {
+      var data = this.props.data,
+          self = this;
+      var commits = this.state.commits.reverse().map(function(c) {
+        var author;
+        if (c.author.login === c.committer.login) {
+          author = <img src={c.author.avatar_url+'v=3&s=45'} className="avatar avatar-small" />;
+        } else {
+          author = (
+            <div class="avatar-parent-child left">
+              <img className="avatar" src={c.author.avatar_url+'v=3&s=45'} />
+              <img className="avatar avatar-child" src={c.committer.avatar_url+'v=3&s=20'} />
+            </div>
+          );
+        }
+        var parent = c.parents.length > 1 ? c.parents.length+' parents ':c.parents.length+' parent ';
+        $.each(c.parents, function(idx) {
+          if (idx === 0) {
+            parent = parent + this.sha.substr(0, 7);
+          } else {
+            parent = parent + ', ' + this.sha.substr(0, 7);
+          }
+        })
         return (
           <div className="commit-header">
-            <h2>{c.message}</h2>
+            <h2 dangerouslySetInnerHTML={{__html: self.md.normalize(c.commit.message)}}></h2>
             <span className="octicon octicon-git-branch"></span> {data.payload.ref.replace('refs/heads/', '')}
             <div className="commit-body">
-              <img src={data.actor.avatar_url+'v=3&s=45'} className="avatar avatar-small" />
-              {data.actor.login}
-              <span className="meta"> authored {moment(data.created_at).fromNow()}</span>
+              {author}
+              {c.author.login}
+              <span className="meta"> authored {moment(c.commit.author.date).fromNow()}</span>
+              <div>
+                {parent} commit {c.commit.tree.sha.substr(0, 7)}
+              </div>
+              <div>
+                <span className="octicon octicon-diff"></span> Showing {c.files.length} changed file
+                with {c.stats.additions} additions and {c.stats.deletions} deletion.
+              </div>
             </div>
           </div>
         );
