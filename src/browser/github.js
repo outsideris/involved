@@ -36,8 +36,8 @@ module.exports = (function() {
 
   return {
     pageSize: 60,
-    setToken: function(t) {
-      TOKEN = t;
+    token: function(t) {
+      if (typeof t === 'string') { TOKEN = t; }
       return TOKEN;
     },
     me: function() {

@@ -5,6 +5,10 @@ should = require 'should'
 
 describe 'Github API', ->
   describe "setToken", ->
+    it "should return token", ->
+      github.token 'new-token'
+      github.token().should.be.equal 'new-token'
+
     it "should save token", ->
       t = github.setToken 'newToken'
       t.should.be.equal 'newToken'
