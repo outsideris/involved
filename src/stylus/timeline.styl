@@ -69,6 +69,10 @@
     font-weight bold
   .meta
     color #767676
+  .black
+    color #222
+  .bold
+    font-weight bold
   .expander
     text-align center
     margin-top 10px
@@ -112,6 +116,8 @@
   border-radius 3px
   color #336479
   background-color #e8f0f8
+.commit
+  margin-bottom 30px
 .commit-header
   border 1px solid #c5d5dd
   background-color #e6f1f6
@@ -120,14 +126,24 @@
   & > h2
   & > .octicon
     margin-left 10px
-.commit-body
+.commit-header-detail
   border-top 1px solid #c5d5dd
   padding 5px 10px
   background-color #fff
   margin-top 4px
+  &:after
+    content ""
+    clear both
+    display block
   .avatar
     width 20px
     height 20px
+  .commit-info
+    text-align right
 .avatar-child
   width 20px
   height 20px
+.commit-body
+  .octicon
+  .mega-octicon
+    color #bbb

@@ -226,29 +226,38 @@ var app = app || {};
             </div>
           );
         }
-        var parent = c.parents.length > 1 ? c.parents.length+' parents ':c.parents.length+' parent ';
-        $.each(c.parents, function(idx) {
+        var parentPrefix = c.parents.length > 1 ? c.parents.length+' parents ':c.parents.length+' parent ';
+        var parent = c.parents.map(function(p, idx) {
           if (idx === 0) {
-            parent = parent + this.sha.substr(0, 7);
+            return (
+              <span className="black">{p.sha.substr(0, 7)}</span>
+            );
           } else {
-            parent = parent + ', ' + this.sha.substr(0, 7);
+            return (
+              <span> + <span className="black">{p.sha.substr(0, 7)}</span></span>
+            );
           }
-        })
+        });
         return (
-          <div className="commit-header">
-            <h2 dangerouslySetInnerHTML={{__html: self.md.normalize(c.commit.message)}}></h2>
-            <span className="octicon octicon-git-branch"></span> {data.payload.ref.replace('refs/heads/', '')}
+          <div className="commit">
+            <div className="commit-header">
+              <h2 dangerouslySetInnerHTML={{__html: self.md.normalize(c.commit.message)}}></h2>
+              <span className="octicon octicon-git-branch"></span> {data.payload.ref.replace('refs/heads/', '')}
+              <div className="commit-header-detail">
+                {author}
+                {c.author.login}
+                <span className="meta"> authored {moment(c.commit.author.date).fromNow()}</span>
+                <div className="right commit-info meta">
+                  commit <span className="black">{c.commit.tree.sha.substr(0, 7)}</span>
+                  <br/>
+                  {parentPrefix} {parent}
+                </div>
+              </div>
+            </div>
             <div className="commit-body">
-              {author}
-              {c.author.login}
-              <span className="meta"> authored {moment(c.commit.author.date).fromNow()}</span>
-              <div>
-                {parent} commit {c.commit.tree.sha.substr(0, 7)}
-              </div>
-              <div>
-                <span className="octicon octicon-diff"></span> Showing {c.files.length} changed file
-                with {c.stats.additions} additions and {c.stats.deletions} deletion.
-              </div>
+              <span className="octicon octicon-diff"></span> Showing <span className="bold">{c.files.length} changed file</span>
+              with <span className="bold">{c.stats.additions} additions</span>
+              and <span className="bold">{c.stats.deletions} deletion</span>.
             </div>
           </div>
         );
