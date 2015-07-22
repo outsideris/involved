@@ -238,6 +238,7 @@ var app = app || {};
             );
           }
         });
+        var changedFiles = c.files.length + ' changed ' + (c.files.length>1?'files':'file');
         return (
           <div className="commit">
             <div className="commit-header">
@@ -255,9 +256,9 @@ var app = app || {};
               </div>
             </div>
             <div className="commit-body">
-              <span className="octicon octicon-diff"></span> Showing <span className="bold">{c.files.length} changed file</span>
-              with <span className="bold">{c.stats.additions} additions</span>
-              and <span className="bold">{c.stats.deletions} deletion</span>.
+              <span className="octicon octicon-diff"></span> Showing <span className="bold">{changedFiles} </span>
+              with <span className="bold">{c.stats.additions} additions </span>
+              and <span className="bold">{c.stats.deletions} deletions</span>.
             </div>
           </div>
         );
