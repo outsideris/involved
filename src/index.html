@@ -8,10 +8,13 @@
   <link rel="stylesheet" href="static/components/primer-markdown/dist/user-content.css">
   <link rel="stylesheet" href="static/css/style.css">
 </head>
-<body class="flex-container flex-container-row" ng-controller="TimelineCtrl"  tabindex="-1">
+<body tabindex="-1">
 
-  <nav class="menus" id="menu"></nav>
-  <section class="main-contents flex-container" id="content"></section>
+  <header id="titlebar"></header>
+  <section class="body flex-container flex-container-row">
+    <nav class="menus" id="menu"></nav>
+    <div class="main-contents flex-container" id="content"></div>
+  </section>
 
   <script src="renderer/init.js"></script>
   <script src="static/components/jquery/dist/jquery.js"></script>
@@ -20,6 +23,7 @@
   <script src="static/components/moment/moment.js"></script>
   <script src="static/components/markdown-it/dist/markdown-it.js"></script>
   <script src="static/components/markdown-it-emoji/dist/markdown-it-emoji.js"></script>
+  <script type="text/jsx" src="renderer/views/Titlebar.jsx"></script>
   <script type="text/jsx" src="renderer/views/Menu.jsx"></script>
   <script type="text/jsx" src="renderer/views/TimelineList.jsx"></script>
   <script type="text/jsx" src="renderer/views/TimelineDetail.jsx"></script>
