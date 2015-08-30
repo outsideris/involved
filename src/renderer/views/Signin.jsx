@@ -4,6 +4,17 @@ var app = app || {};
   'use strict';
 
   app.Signin = React.createClass({
+    ipc: require('ipc'),
+    handleSubmit: function() {
+      if (this.state.key.trim()) {
+        var self = this;
+        app.token = this.ipc.sendSync('github.token', this.state.key);
+        this.ipc.send('github.me');
+        this.ipc.on('github.me', function(profile) {
+          self.props.onLogin(profile);
+        });
+      }
+    },
     handleChange: function(event) {
       this.setState({
         key: event.target.value
@@ -32,6 +43,7 @@ var app = app || {};
               <button
                 type="button"
                 className="btn btn-primary"
+                onClick={this.handleSubmit}
               >Save</button>
             </div>
             <div className="signin-guide">

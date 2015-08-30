@@ -5,8 +5,8 @@ var ipc = require('ipc');
 var github = require('./github'),
     repo = require('./repository');
 
-ipc.on('github.token', function(event) {
-  event.returnValue = github.token();
+ipc.on('github.token', function(event, token) {
+  event.returnValue = github.token(token);
 });
 
 ipc.on('github.me', function(event) {

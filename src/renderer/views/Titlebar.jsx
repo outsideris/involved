@@ -20,22 +20,15 @@ var app = app || {};
       }
     },
     getInitialState: function() {
-      return {data: []};
-    },
-    componentDidMount: function() {
-      var self = this;
-      this.ipc.send('github.me');
-      this.ipc.on('github.me', function(profile) {
-        self.setState({data:profile});
-      });
+      return {user: {}};
     },
     render: function () {
       var profile;
-      if (!!this.state.data.login) {
+      if (!!this.state.user.login) {
         profile = (
           <div id="profile">
-            <img src={this.state.data.avatar_url+'v=3&s=25'} className="avatar avatar-small me"/>
-            <span>{this.state.data.login}</span>
+            <img src={this.state.user.avatar_url+'v=3&s=25'} className="avatar avatar-small"/>
+            <span>{this.state.user.login}</span>
           </div>
         );
       } else {
@@ -44,6 +37,12 @@ var app = app || {};
           </div>
         );
       }
+
+      var self = this;
+      this.ipc.on('github.me', function(profile) {
+        self.setState({user:profile});
+      });
+
       return (
         <div>
           <div className="window-buttons">

@@ -7,6 +7,9 @@ var app = app || {};
       Menus = app.Menus;
 
   var App = React.createClass({
+    handleLogin: function(profile) {
+      this.setState({user: profile});
+    },
     getInitialState: function() {
       return {user: {}};
     },
@@ -14,7 +17,7 @@ var app = app || {};
       var content;
       if (!this.state.user.login) {
         content = (
-          <Signin/>
+          <Signin onLogin={this.handleLogin} />
         );
       } else {
         content = (
