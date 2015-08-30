@@ -6,6 +6,8 @@
   height titlebar-height
   -webkit-app-region drag
   -webkit-user-select none
+  background-color #F5F5F5
+  border-bottom 1px solid #E5E5E5
 
 .window-buttons
   width 60px
@@ -14,6 +16,7 @@
   font-size 11px
   text-align center
   cursor default
+  margin-top 6px
   &:hover
     span
       visibility visible
@@ -44,3 +47,14 @@
   border 1px solid fullscreen-button-border-color
   &:active
     background-color fullscreen-button-active-color
+
+#profile
+  position absolute
+  top 0
+  right 10px
+  height titlebar-height
+  line-height titlebar-height
+  .avatar
+    width 25px
+    height 25px
+    margin-right 5px

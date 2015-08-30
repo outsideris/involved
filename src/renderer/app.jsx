@@ -3,14 +3,38 @@ var app = app || {};
 (function() {
   'use strict';
 
-  var Repository = app.Repository,
-      ipc = require('ipc');
+  var Signin = app.Signin,
+      Menus = app.Menus;
 
-  app.token = ipc.sendSync('github.token');
+  var App = React.createClass({
+    getInitialState: function() {
+      return {user: {}};
+    },
+    render: function () {
+      var content;
+      if (!this.state.user.login) {
+        content = (
+          <Signin/>
+        );
+      } else {
+        content = (
+          <div className="body flex-container flex-container-row">
+            <Menus />
+            <div className="main-contents flex-container"></div>
+          </div>
+        );
+      }
+      return (
+        <div>
+          {content}
+        </div>
+      );
+    }
+  });
 
   function render() {
     React.render(
-      <Repository since={0} />,
+      <App />,
       document.getElementById('content')
     );
   }

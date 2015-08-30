@@ -3,7 +3,7 @@ var app = app || {};
 (function() {
   'use strict';
 
-  var Menus = React.createClass({
+  app.Menus = React.createClass({
     ipc: require('ipc'),
     getInitialState: function() {
       return {data: []};
@@ -17,20 +17,13 @@ var app = app || {};
     },
     render: function () {
       return (
-        <div className="profile">
-          <img src={this.state.data.avatar_url+'v=3&s=45'} className="avatar avatar-small me"/>
-          <span>{this.state.data.login}</span>
-        </div>
+        <nav className="menus" id="menu">
+          <div className="profile">
+            <img src={this.state.data.avatar_url+'v=3&s=45'} className="avatar avatar-small me"/>
+            <span>{this.state.data.login}</span>
+          </div>
+        </nav>
       );
     }
   });
-
-  function render() {
-    React.render(
-      <Menus />,
-      document.getElementById('menu')
-    );
-  }
-
-  render();
 })();

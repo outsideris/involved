@@ -4,6 +4,7 @@ var app = app || {};
   'use strict';
 
   var Titlebar = React.createClass({
+    ipc: require('ipc'),
     remote: require('remote'),
     close: function () {
       this.remote.getCurrentWindow().close();
@@ -18,7 +19,31 @@ var app = app || {};
         this.remote.getCurrentWindow().maximize();
       }
     },
+    getInitialState: function() {
+      return {data: []};
+    },
+    componentDidMount: function() {
+      var self = this;
+      this.ipc.send('github.me');
+      this.ipc.on('github.me', function(profile) {
+        self.setState({data:profile});
+      });
+    },
     render: function () {
+      var profile;
+      if (!!this.state.data.login) {
+        profile = (
+          <div id="profile">
+            <img src={this.state.data.avatar_url+'v=3&s=25'} className="avatar avatar-small me"/>
+            <span>{this.state.data.login}</span>
+          </div>
+        );
+      } else {
+        profile = (
+          <div id="profile">
+          </div>
+        );
+      }
       return (
         <div>
           <div className="window-buttons">
@@ -26,6 +51,7 @@ var app = app || {};
             <div className="window-btn window-button-hide" onClick={this.minimize}><span>-</span></div>
             <div className="window-btn window-button-fullscreen" onClick={this.fullscreen}><span>+</span></div>
           </div>
+          {profile}
         </div>
       );
     }
