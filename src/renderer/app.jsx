@@ -7,31 +7,35 @@ var app = app || {};
       Menus = app.Menus;
 
   var App = React.createClass({
+    ipc: require('ipc'),
     handleLogin: function(profile) {
       this.setState({user: profile});
     },
+    componentWillMount: function () {
+      var self = this;
+      this.ipc.send('github.me');
+      this.ipc.on('github.me', function(profile) {
+        self.setState({user: profile});
+      });
+    },
     getInitialState: function() {
+      app.token = this.ipc.sendSync('github.token');
+      console.log(app.token)
       return {user: {}};
     },
     render: function () {
-      var content;
       if (!this.state.user.login) {
-        content = (
+        return (
           <Signin onLogin={this.handleLogin} />
         );
       } else {
-        content = (
-          <div className="body flex-container flex-container-row">
+        return (
+          <div className="flex-container flex-container-row">
             <Menus />
             <div className="main-contents flex-container"></div>
           </div>
         );
       }
-      return (
-        <div>
-          {content}
-        </div>
-      );
     }
   });
 
