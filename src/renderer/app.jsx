@@ -4,12 +4,16 @@ var app = app || {};
   'use strict';
 
   var Signin = app.Signin,
-      Menus = app.Menus;
+      Menus = app.Menus,
+      Repository = app.Repository;
 
   var App = React.createClass({
     ipc: require('ipc'),
     handleLogin: function(profile) {
       this.setState({user: profile});
+    },
+    handleSelect: function(mode) {
+      this.setState({mode: mode});
     },
     componentWillMount: function () {
       var self = this;
@@ -29,10 +33,16 @@ var app = app || {};
           <Signin onLogin={this.handleLogin} />
         );
       } else {
+        var mode;
+        if (this.state.mode === 'repo') {
+          mode = <Repository />
+        } else if (this.state.mode === 'issue') {
+          mode = <div className="main-contents flex-container"></div>
+        }
         return (
           <div className="flex-container flex-container-row">
-            <Menus />
-            <div className="main-contents flex-container"></div>
+            <Menus onSelect={this.handleSelect} mode={this.state.mode} />
+            {mode}
           </div>
         );
       }

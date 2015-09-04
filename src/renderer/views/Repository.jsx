@@ -23,9 +23,11 @@ var app = app || {};
     },
     render: function () {
       return (
-        <div id="repository" className="flex-container">
-          <TimelineList list={this.state.data} onClick={this.handleClick} />
-          <TimelineDetail item={this.state.item} />
+        <div className="main-contents flex-container">
+          <div id="repository" className="flex-container">
+            <TimelineList list={this.state.data} onClick={this.handleClick} />
+            <TimelineDetail item={this.state.item} />
+          </div>
         </div>
       );
     }
