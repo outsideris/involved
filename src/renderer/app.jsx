@@ -24,13 +24,12 @@ var app = app || {};
     },
     getInitialState: function() {
       app.token = this.ipc.sendSync('github.token');
-      console.log(app.token)
       return {user: {}};
     },
     render: function () {
       if (!this.state.user.login) {
         return (
-          <Signin onLogin={this.handleLogin} />
+          <Signin onLogin={this.handleLogin} showModal={false} />
         );
       } else {
         var mode;

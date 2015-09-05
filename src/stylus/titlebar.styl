@@ -51,10 +51,29 @@
 #profile
   position absolute
   top 0
-  right 10px
+  right 15px
   height titlebar-height
   line-height titlebar-height
+  cursor pointer
+  -webkit-app-region no-drag
   .avatar
     width 25px
     height 25px
     margin-right 5px
+  .octicon
+    margin-left 4px
+
+#profile-menu
+  line-height normal
+  position absolute
+  top (titlebar-height - 5)
+  right 0
+  width 180px
+  display none
+  &.active
+    display block
+  a
+  a:hover
+  a:active
+  a:visited
+    font-weight normal

@@ -19,16 +19,32 @@ var app = app || {};
         this.remote.getCurrentWindow().maximize();
       }
     },
+    handleClick: function() {
+      this.setState({showModal: !this.state.showModal});
+    },
     getInitialState: function() {
-      return {user: {}};
+      return {user: {}, showModal: this.props.showModal};
     },
     render: function () {
       var profile;
       if (!!this.state.user.login) {
+        var cx = React.addons.classSet;
+        var classes = cx({ 'menu': true, 'active': this.state.showModal });
         profile = (
-          <div id="profile">
+          <div id="profile" onClick={this.handleClick}>
             <img src={this.state.user.avatar_url+'v=3&s=25'} className="avatar avatar-small"/>
-            <span>{this.state.user.login}</span>
+            <span className="octicon octicon-triangle-down"></span>
+            <nav className={classes} id="profile-menu">
+              <span className="menu-heading">Signed in as {this.state.user.login}</span>
+              <a className="menu-item" href="#">
+                <span className="octicon octicon-tools"></span>
+                Repositories
+              </a>
+              <a className="menu-item" href="#">
+                <span className="octicon octicon-tools"></span>
+                Issues
+              </a>
+            </nav>
           </div>
         );
       } else {
