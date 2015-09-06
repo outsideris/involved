@@ -6,6 +6,7 @@ var app = app || {};
   var Titlebar = React.createClass({
     ipc: require('ipc'),
     remote: require('remote'),
+    classNames: require('classnames'),
     close: function () {
       this.remote.getCurrentWindow().close();
     },
@@ -28,8 +29,7 @@ var app = app || {};
     render: function () {
       var profile;
       if (!!this.state.user.login) {
-        var cx = React.addons.classSet;
-        var classes = cx({ 'menu': true, 'active': this.state.showModal });
+        var classes = this.classNames({ 'menu': true, 'active': this.state.showModal });
         profile = (
           <div id="profile" onClick={this.handleClick}>
             <img src={this.state.user.avatar_url+'v=3&s=25'} className="avatar avatar-small"/>

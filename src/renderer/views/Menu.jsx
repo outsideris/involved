@@ -5,15 +5,16 @@ var app = app || {};
 
   app.Menus = React.createClass({
     ipc: require('ipc'),
+    classNames: require('classnames'),
     selectRepo: function() { this.props.onSelect('repo'); },
     selectIssue: function() { this.props.onSelect('issue'); },
     getInitialState: function() {
       return {data: []};
     },
     render: function () {
-      var cx = React.addons.classSet;
-      var repoClasses = cx({ 'a-menu': true, 'active': this.props.mode === 'repo' });
-      var issueClasses = cx({ 'a-menu': true, 'active': this.props.mode === 'issue' });
+      var classNames = require('classnames');
+      var repoClasses = this.classNames({ 'a-menu': true, 'active': this.props.mode === 'repo' });
+      var issueClasses = this.classNames({ 'a-menu': true, 'active': this.props.mode === 'issue' });
 
       return (
         <nav className="menus" id="menu">
