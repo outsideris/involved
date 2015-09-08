@@ -23,6 +23,12 @@ var app = app || {};
     handleClick: function() {
       this.setState({showModal: !this.state.showModal});
     },
+    manageRepo: function(){
+      app.changeContentsMode('manage-repo');
+    },
+    manageIssue: function(){
+      app.changeContentsMode('manage-issue');
+    },
     getInitialState: function() {
       return {user: {}, showModal: this.props.showModal};
     },
@@ -36,11 +42,11 @@ var app = app || {};
             <span className="octicon octicon-triangle-down"></span>
             <nav className={classes} id="profile-menu">
               <span className="menu-heading">Signed in as {this.state.user.login}</span>
-              <a className="menu-item" href="#">
+              <a className="menu-item" href="#" onClick={this.manageRepo}>
                 <span className="octicon octicon-tools"></span>
                 Repositories
               </a>
-              <a className="menu-item" href="#">
+              <a className="menu-item" href="#" onClick={this.manageIssue}>
                 <span className="octicon octicon-tools"></span>
                 Issues
               </a>

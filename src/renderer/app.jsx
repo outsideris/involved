@@ -5,7 +5,9 @@ var app = app || {};
 
   var Signin = app.Signin,
       Menus = app.Menus,
-      Repository = app.Repository;
+      Repository = app.Repository,
+      ManageRepository = app.ManageRepository,
+      ManageIssue = app.ManageIssue;
 
   var App = React.createClass({
     ipc: require('ipc'),
@@ -14,6 +16,12 @@ var app = app || {};
     },
     handleSelect: function(mode) {
       this.setState({mode: mode});
+    },
+    componentDidMount: function() {
+      var self = this;
+      app.changeContentsMode = function(mode) {
+        self.setState({mode: mode})
+      };
     },
     componentWillMount: function () {
       var self = this;
@@ -37,6 +45,10 @@ var app = app || {};
           mode = <Repository />
         } else if (this.state.mode === 'issue') {
           mode = <div className="main-contents flex-container"></div>
+        } else if (this.state.mode === 'manage-repo') {
+          mode = <ManageRepository />
+        } else if (this.state.mode === 'manage-issue') {
+          mode = <ManageIssue />
         }
         return (
           <div className="flex-container flex-container-row">
