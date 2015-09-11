@@ -46,7 +46,7 @@ var app = app || {};
                 onClick={this.handleSubmit}
               >Save</button>
             </div>
-            <div className="signin-guide">
+            <div className="guide">
               You can generate the access token under
               "Settings" &gt; "Personal access tokens"
             </div>
