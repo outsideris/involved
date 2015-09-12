@@ -20,6 +20,10 @@ describe 'Repository', ->
       repo.watch {owner: 'nodejs', repo: 'io.js'}
       result = repo.watch {owner: 'Automattic', repo: 'socket.io'}
       result.length.should.be.equal 2
+    it "should not add a project that already exist", ->
+      repo.watch {owner: 'nodejs', repo: 'io.js'}
+      result = repo.watch {owner: 'nodejs', repo: 'io.js'}
+      result.length.should.be.equal 1
 
   describe "unwatch", ->
     beforeEach ->

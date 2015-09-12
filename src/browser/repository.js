@@ -13,7 +13,7 @@ module.exports = (function() {
   return {
     db: db,
     watch: function(p) {
-      if (p && p.owner && p.repo) {
+      if (p && p.owner && p.repo && !_.where(projects, p).length) {
         projects.push(p);
       }
       return projects;
