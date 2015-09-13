@@ -12,7 +12,6 @@ var app = app || {};
       return {data: []};
     },
     render: function () {
-      var classNames = require('classnames');
       var repoClasses = this.classNames({ 'a-menu': true, 'active': this.props.mode === 'repo' });
       var issueClasses = this.classNames({ 'a-menu': true, 'active': this.props.mode === 'issue' });
 
