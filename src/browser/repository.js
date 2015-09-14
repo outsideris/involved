@@ -6,37 +6,37 @@ var _ = require('lodash'),
 
 var github = require('./github');
 
-var db = lowdb('db.json')('repos');
+var db = lowdb('db.json'),
+    repoDB = db('repos'),
+    repoEventDB = db('timeline');
 
 module.exports = (function() {
-  var projects = [];
   return {
-    db: db,
+    repoEventDB: repoEventDB,
     watch: function(p) {
-      if (p && p.owner && p.repo && !_.where(projects, p).length) {
-        projects.push(p);
+      if (p && p.owner && p.repo && !repoDB.find({owner: p.owner, repo:p.repo})) {
+        repoDB.push(p);
       }
-      return projects;
+      return repoDB.chain().where({}).value();
     },
     unwatch: function(p) {
       if (p && p.owner && p.repo) {
-        var index = _.findIndex(projects, function(o) {
-          return o.owner === p.owner && o.repo === p.repo;
-        });
-        if (~index) { projects.splice(index, 1); }
+        repoDB.remove(p);
       }
-      return projects;
+      return repoDB.chain().where({}).value();
     },
     unwatchAll: function() {
-      projects = [];
+      repoDB.remove();
     },
     events: function(sinceId) {
       var deferred = Q.defer();
       sinceId = sinceId || Infinity;
 
+      var projects = repoDB.chain().where({}).value();
+
       Q.all(
         _.chain(projects).filter(function(p) {
-          return db.chain().where({repo: {name: p.owner+'/'+p.repo}})
+          return db('timeline').chain().where({repo: {name: p.owner+'/'+p.repo}})
               .filter(function(o) { return o.id<sinceId; }).value().length < github.pageSize/4;
         }).map(function(p) {
           return github.repoEvents(p.owner, p.repo, p.nextPage);
@@ -45,7 +45,7 @@ module.exports = (function() {
           result.forEach(function(data) {
             data.body.forEach(function(evt) {
               if (evt.type !== 'ForkEvent' && evt.type !== 'WatchEvent' && evt.type !== 'GollumEvent') {
-                db.push(evt);
+                db('timeline').push(evt);
               }
             });
           });
@@ -61,7 +61,7 @@ module.exports = (function() {
       sinceId = sinceId || Infinity;
 
       this.events(sinceId).then(function() {
-        var list = db.chain().filter(function(o) { return o.id<sinceId; })
+        var list = db('timeline').chain().filter(function(o) { return o.id<sinceId; })
           .sortBy('created_at').reverse().take(github.pageSize/4).value();
         deferred.resolve(list);
       }).catch(function(e) { deferred.reject(e); });
