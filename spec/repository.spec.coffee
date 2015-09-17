@@ -1,11 +1,14 @@
 require('./ipc-mock')()
 
+fs = require 'fs'
 repo = require '../src/browser/repository'
 github = require '../src/browser/github'
 should = require 'should'
 
 describe 'Repository', ->
   timelineSize = github.pageSize / 4
+  before ->
+    github.token fs.readFileSync('./spec/.token').toString()
 
   describe "watch", ->
     beforeEach ->

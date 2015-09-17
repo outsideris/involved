@@ -1,16 +1,22 @@
 require('./ipc-mock')()
 
+fs = require 'fs'
 github = require '../src/browser/github'
 should = require 'should'
 
-describe 'Github API', ->
+tokenFixture = fs.readFileSync('./spec/.token').toString()
+
+describe.only 'Github API', ->
+  beforeEach ->
+    github.token tokenFixture
+
   describe "setToken", ->
     it "should return token", ->
       github.token 'new-token'
       github.token().should.be.equal 'new-token'
 
     it "should save token", ->
-      t = github.setToken 'newToken'
+      t = github.token 'newToken'
       t.should.be.equal 'newToken'
 
   describe "me", ->
