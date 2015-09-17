@@ -22,11 +22,13 @@ module.exports = (function() {
     unwatch: function(p) {
       if (p && p.owner && p.repo) {
         repoDB.remove(p);
+        repoEventDB.remove({repo: {name: p.owner+'/'+p.repo}});
       }
       return repoDB.chain().where({}).value();
     },
     unwatchAll: function() {
       repoDB.remove();
+      repoEventDB.remove();
     },
     events: function(sinceId) {
       var deferred = Q.defer();
@@ -36,7 +38,7 @@ module.exports = (function() {
 
       Q.all(
         _.chain(projects).filter(function(p) {
-          return db('timeline').chain().where({repo: {name: p.owner+'/'+p.repo}})
+          return repoEventDB.chain().where({repo: {name: p.owner+'/'+p.repo}})
               .filter(function(o) { return o.id<sinceId; }).value().length < github.pageSize/4;
         }).map(function(p) {
           return github.repoEvents(p.owner, p.repo, p.nextPage);
@@ -45,7 +47,7 @@ module.exports = (function() {
           result.forEach(function(data) {
             data.body.forEach(function(evt) {
               if (evt.type !== 'ForkEvent' && evt.type !== 'WatchEvent' && evt.type !== 'GollumEvent') {
-                db('timeline').push(evt);
+                repoEventDB.push(evt);
               }
             });
           });
@@ -61,7 +63,7 @@ module.exports = (function() {
       sinceId = sinceId || Infinity;
 
       this.events(sinceId).then(function() {
-        var list = db('timeline').chain().filter(function(o) { return o.id<sinceId; })
+        var list = repoEventDB.chain().filter(function(o) { return o.id<sinceId; })
           .sortBy('created_at').reverse().take(github.pageSize/4).value();
         deferred.resolve(list);
       }).catch(function(e) { deferred.reject(e); });
