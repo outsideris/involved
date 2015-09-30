@@ -1,6 +1,15 @@
 {
   "name": "involved",
   "version": "0.0.1",
+  "description": "App to encourage to contribute to open source project on github",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/outsideris/involved.git"
+  },
+  "bugs": {
+    "url": "https://github.com/outsideris/involved/issues"
+  },
+  "license": "MIT",
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.11.2",
@@ -14,8 +23,10 @@
     "should": "^7.1.0"
   },
   "scripts": {
-    "start": "./run.sh",
-    "test": "apm test"
+    "postinstall": "cd src && npm install",
+    "prestart": "mkdir -p build && grunt download-electron",
+    "start": "build/electron/Electron.app/Contents/MacOS/Electron src",
+    "test": "grunt test"
   },
   "dependencies": {
     "classnames": "^2.1.3"
