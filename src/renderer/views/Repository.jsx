@@ -3,6 +3,8 @@ var app = app || {};
 (function() {
   'use strict';
 
+  var React = require('react');
+
   var TimelineList  = app.TimelineList,
       TimelineDetail = app.TimelineDetail;
 

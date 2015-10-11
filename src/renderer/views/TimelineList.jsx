@@ -3,6 +3,8 @@ var app = app || {};
 (function() {
   'use strict';
 
+  var React = require('react');
+
   var eventTypes = {};
 
   eventTypes.CreateEvent = React.createClass({

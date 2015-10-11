@@ -3,6 +3,8 @@ var app = app || {};
 (function() {
   'use strict';
 
+  var React = require('react');
+
   app.Signin = React.createClass({
     ipc: require('ipc'),
     handleSubmit: function() {

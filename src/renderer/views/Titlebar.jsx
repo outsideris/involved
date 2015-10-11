@@ -3,6 +3,8 @@ var app = app || {};
 (function() {
   'use strict';
 
+  var React = require('react');
+
   var Titlebar = React.createClass({
     ipc: require('ipc'),
     remote: require('remote'),

@@ -3,12 +3,14 @@ var app = app || {};
 (function() {
   'use strict';
 
+  var React = require('react');
+
   var MarkdownParser = function() {
-    var markdown = window.markdownit(),
+    var markdown = require('markdown-it')(),
         ipc = require('ipc');
     ipc.send('github.emojis');
     ipc.on('github.emojis', function(emojis) {
-      if (!markdown.renderer.rules.emoji) { markdown.use(window.markdownitEmoji);  }
+      if (!markdown.renderer.rules.emoji) { markdown.use(require('markdown-it-emoji'));  }
       markdown.renderer.rules.emoji = function(token, idx) {
         var code = token[idx].markup;
         return '<img title=":'+code+':" alt=":'+code+':" src="'+emojis[code]+'" class="emoji">';

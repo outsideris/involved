@@ -3,6 +3,8 @@ var app = app || {};
 (function() {
   'use strict';
 
+  var React = require('react');
+
   app.Menus = React.createClass({
     ipc: require('ipc'),
     classNames: require('classnames'),

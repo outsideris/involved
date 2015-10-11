@@ -3,6 +3,8 @@ var app = app || {};
 (function() {
   'use strict';
 
+  var React = require('react');
+
   var RepositoryItem = React.createClass({
     handleClick: function() { this.props.onDestroy(this.props.item); },
     render: function() {

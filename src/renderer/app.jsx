@@ -3,6 +3,8 @@ var app = app || {};
 (function() {
   'use strict';
 
+  var React = require('react');
+
   var Signin = app.Signin,
       Menus = app.Menus,
       Repository = app.Repository,

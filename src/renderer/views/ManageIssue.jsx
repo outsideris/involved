@@ -3,6 +3,8 @@ var app = app || {};
 (function() {
   'use strict';
 
+  var React = require('react');
+
   app.ManageIssue = React.createClass({
     render: function () {
       return (
