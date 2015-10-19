@@ -69,37 +69,18 @@ describe 'Repository', ->
         done()
       .catch(done)
 
-  describe "events", ->
+  describe.only "timeline", ->
     beforeEach ->
       repo.repoEventDB.remove()
       repo.unwatchAll()
       repo.watch {owner: 'nodejs', repo: 'node'}
       repo.watch {owner: 'jquery', repo: 'jquery'}
 
-    it "should return timeline of repositories", (done) ->
-      repo.events().then () ->
-        (repo.repoEventDB.size() > timelineSize).should.be.ok;
-        repo.repoEventDB.find().should.have.property('type')
-        repo.repoEventDB.find().should.have.property('payload')
-        done()
-      .catch done
-
-  describe "timeline", ->
-    beforeEach ->
-      repo.repoEventDB.remove()
-      repo.unwatchAll()
-      repo.watch {owner: 'nodejs', repo: 'node'}
-      repo.watch {owner: 'jquery', repo: 'jquery'}
-
-    it "should return timeline watched", (done) ->
+    it "should return timeline watched", ->
       repo.timeline().then (list) ->
-        list.length.should.be.equal(timelineSize);
-        done()
-      .catch done
+        list.length.should.be.equal(timelineSize)
 
-    it "should return timeline since id", (done) ->
+    it "should return timeline since id", ->
       repo.timeline().then (list) ->
         repo.timeline(list[timelineSize-1].id).then (list) ->
-          list.length.should.be.equal(timelineSize);
-          done()
-      .catch done
+          list.length.should.be.equal(timelineSize)
