@@ -24,6 +24,6 @@ gulp.task('dev', function() {
 
 gulp.task('test', function () {
   require('coffee-script/register');
-  return gulp.src('spec/**/*.spec.coffee', {read: false})
-    .pipe(mocha({reporter: 'spec'}));
+  return gulp.src('spec/**/*.spec.coffee')
+    .pipe(mocha({reporter: 'spec', timeout: 10000}));
 });
