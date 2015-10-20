@@ -31,32 +31,39 @@ module.exports = (function() {
       repoEventDB.remove();
     },
     timeline: function(sinceId) {
-      sinceId = sinceId || Infinity;
-
       var projects = repoDB.chain().where({}).value();
 
-      return Q.all(
-        _.chain(projects).filter(function(p) {
+      var promises;
+      if (!sinceId) {
+        repoEventDB.remove();
+        promises = _.chain(projects).map(function(p) {
+          return github.repoEvents(p.owner, p.repo, p.nextPage);
+        }).value();
+      } else {
+        promises = _.chain(projects).filter(function(p) {
           return repoEventDB.chain().where({repo: {name: p.owner+'/'+p.repo}})
               .filter(function(o) { return o.id<sinceId; }).value().length < github.pageSize/4;
         }).map(function(p) {
           return github.repoEvents(p.owner, p.repo, p.nextPage);
-        }).value()
-      ).then(function(result) {
-        result.forEach(function(data) {
-          data.body.forEach(function(evt) {
-            if (evt.type !== 'ForkEvent' && evt.type !== 'WatchEvent' && evt.type !== 'GollumEvent') {
-              repoEventDB.push(evt);
-            }
+        }).value();
+      }
+
+      return Q.all(promises)
+        .then(function(result) {
+          result.forEach(function(data) {
+            data.body.forEach(function(evt) {
+              if (evt.type !== 'ForkEvent' && evt.type !== 'WatchEvent' && evt.type !== 'GollumEvent') {
+                repoEventDB.push(evt);
+              }
+            });
           });
+          projects.forEach(function(p) {
+            p.nextPage = (p.nextPage || 1) + 1;
+          });
+        }).then(function() {
+          return repoEventDB.chain().filter(function(o) { return o.id<(sinceId || Infinity); })
+            .sortBy('created_at').reverse().take(github.pageSize/4).value();
         });
-        projects.forEach(function(p) {
-          p.nextPage = (p.nextPage || 1) + 1;
-        });
-      }).then(function() {
-        return repoEventDB.chain().filter(function(o) { return o.id<sinceId; })
-          .sortBy('created_at').reverse().take(github.pageSize/4).value();
-      });
     }
   };
 })();

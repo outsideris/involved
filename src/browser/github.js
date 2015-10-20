@@ -10,7 +10,7 @@ module.exports = (function() {
     return 'https://api.github.com' + path;
   };
 
-  var baseRequest = function() { console.log('The github token is absent.')};
+  var baseRequest = function() { console.log('The github token is absent.'); };
   var setBaseRequest = function() {
     baseRequest = request.defaults({
       // user-agent required

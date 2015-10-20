@@ -69,7 +69,7 @@ describe 'Repository', ->
         done()
       .catch(done)
 
-  describe.only "timeline", ->
+  describe "timeline", ->
     beforeEach ->
       repo.repoEventDB.remove()
       repo.unwatchAll()
@@ -82,5 +82,22 @@ describe 'Repository', ->
 
     it "should return timeline since id", ->
       repo.timeline().then (list) ->
+        list[0].isOld = true
         repo.timeline(list[timelineSize-1].id).then (list) ->
           list.length.should.be.equal(timelineSize)
+          list[0].should.not.have.property('isOld');
+
+    it "should return next timeline since id", ->
+      repo.timeline().then (list) ->
+        list[0].isOld = true
+        repo.timeline(list[timelineSize-1].id).then (list) ->
+          repo.timeline(list[timelineSize-1].id).then (list) ->
+            repo.timeline(list[timelineSize-1].id).then (list) ->
+              list.length.should.be.equal(timelineSize)
+              list[0].should.not.have.property('isOld');
+
+    it "should return new timeline when sinceId is not passed", ->
+      repo.timeline().then (list) ->
+        list[0].isOld = true
+        repo.timeline().then (list) ->
+          list[0].should.not.have.property('isOld');
