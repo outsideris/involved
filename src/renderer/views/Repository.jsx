@@ -10,6 +10,7 @@ var app = app || {};
 
   app.Repository = React.createClass({
     ipc: require('ipc'),
+    lastId: null,
     getInitialState: function() {
       return {data: []};
     },
@@ -17,6 +18,7 @@ var app = app || {};
       var self = this;
       this.ipc.send('repo.timeline', this.props.since);
       this.ipc.on('repo.timeline', function(list) {
+        this.lastId = list[list.length-1].id;
         self.setState({data: list});
       });
     },

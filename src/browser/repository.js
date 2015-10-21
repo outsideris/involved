@@ -37,6 +37,7 @@ module.exports = (function() {
       if (!sinceId) {
         repoEventDB.remove();
         promises = _.chain(projects).map(function(p) {
+          p.nextPage = 1;
           return github.repoEvents(p.owner, p.repo, p.nextPage);
         }).value();
       } else {
