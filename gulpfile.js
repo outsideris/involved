@@ -1,7 +1,8 @@
 var gulp = require('gulp'),
     jshint = require('gulp-jshint'),
-    stylus = require('gulp-stylus')
+    stylus = require('gulp-stylus'),
     mocha = require('gulp-mocha'),
+    babel = require("gulp-babel"),
     pkg = require('./package.json');
 
 gulp.task('lint', function() {
@@ -18,8 +19,17 @@ gulp.task('stylus', function () {
     .pipe(gulp.dest('./src/static/css'));
 });
 
+gulp.task('script', function () {
+  return gulp.src('src/renderer/**/*.jsx')
+    .pipe(babel({
+      "presets": ['react']
+    }))
+    .pipe(gulp.dest('src/static/js'));
+});
+
 gulp.task('dev', function() {
-  gulp.watch('./src/stylus/**/*.styl', ['stylus']);
+  gulp.watch('src/stylus/**/*.styl', ['stylus']);
+  gulp.watch('src/renderer/**/*.{js,jsx}', ['script']);
 });
 
 gulp.task('test', function () {
