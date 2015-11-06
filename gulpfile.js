@@ -20,7 +20,7 @@ gulp.task('stylus', function () {
 });
 
 gulp.task('script', function () {
-  return gulp.src('src/renderer/**/*.jsx')
+  return gulp.src('src/renderer/**/*.{js,jsx}')
     .pipe(babel({
       "presets": ['react']
     }))
