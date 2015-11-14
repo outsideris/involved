@@ -11,7 +11,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "babel-preset-react": "^6.0.15",
+    "babel-preset-react": "^6.1.18",
     "coffee-script": "^1.10.0",
     "electron-prebuilt": "^0.33.9",
     "gulp": "^3.9.0",

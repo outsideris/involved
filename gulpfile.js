@@ -19,17 +19,8 @@ gulp.task('stylus', function () {
     .pipe(gulp.dest('./src/static/css'));
 });
 
-gulp.task('script', function () {
-  return gulp.src('src/renderer/**/*.{js,jsx}')
-    .pipe(babel({
-      "presets": ['react']
-    }))
-    .pipe(gulp.dest('src/static/js'));
-});
-
 gulp.task('dev', function() {
   gulp.watch('src/stylus/**/*.styl', ['stylus']);
-  gulp.watch('src/renderer/**/*.{js,jsx}', ['script']);
 });
 
 gulp.task('test', function () {
