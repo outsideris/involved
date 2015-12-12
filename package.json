@@ -20,7 +20,7 @@
   "devDependencies": {
     "babel-preset-react": "^6.1.18",
     "coffee-script": "^1.10.0",
-    "electron-prebuilt": "^0.33.9",
+    "electron-prebuilt": "^0.35.4",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.0.0",
     "gulp-jshint": "^1.11.2",
