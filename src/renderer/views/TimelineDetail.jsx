@@ -4,7 +4,7 @@ var React = require('react');
 
 var MarkdownParser = function() {
   var markdown = require('markdown-it')(),
-      ipc = require('ipc');
+      ipc = require("electron").ipcRenderer;
   ipc.send('github.emojis');
   ipc.on('github.emojis', function(emojis) {
     if (!markdown.renderer.rules.emoji) { markdown.use(require('markdown-it-emoji'));  }

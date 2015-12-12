@@ -12,7 +12,7 @@ var Signin = require('./views/Signin'),
     ManageIssue = require('./views/ManageIssue');
 
 module.exports = React.createClass({
-  ipc: require('ipc'),
+  ipc: require("electron").ipcRenderer,
   handleLogin: function(profile) {
     this.setState({user: profile});
   },

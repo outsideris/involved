@@ -3,7 +3,7 @@
 var React = require('react');
 
 module.exports = React.createClass({
-  ipc: require('ipc'),
+  ipc: require("electron").ipcRenderer,
   remote: require('remote'),
   classNames: require('classnames'),
   close: function () {

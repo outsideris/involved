@@ -19,7 +19,7 @@ var RepositoryItem = React.createClass({
 });
 
 module.exports = React.createClass({
-  ipc: require('ipc'),
+  ipc: require("electron").ipcRenderer,
   classNames: require('classnames'),
   handleSubmit: function(event) {
     event.preventDefault();

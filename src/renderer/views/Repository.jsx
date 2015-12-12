@@ -6,7 +6,7 @@ var TimelineList  =  require('./TimelineList'),
     TimelineDetail = require('./TimelineDetail');
 
 module.exports = React.createClass({
-  ipc: require('ipc'),
+  ipc: require("electron").ipcRenderer,
   lastId: null,
   getInitialState: function() {
     return {data: []};

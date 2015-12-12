@@ -5,7 +5,7 @@ var React = require('react');
 var store = require('../store')
 
 module.exports = React.createClass({
-  ipc: require('ipc'),
+  ipc: require("electron").ipcRenderer,
   handleSubmit: function() {
     if (this.state.key.trim()) {
       var self = this;
