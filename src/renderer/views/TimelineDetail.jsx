@@ -1,18 +1,19 @@
 'use strict';
 
-var React = require('react');
+var ipcRenderer = require("electron").ipcRenderer,
+    React = require('react'),
+    markdown = require('markdown-it')();
+
+ipcRenderer.on('github.emojis', function(event, emojis) {
+  if (!markdown.renderer.rules.emoji) { markdown.use(require('markdown-it-emoji'));  }
+  markdown.renderer.rules.emoji = function(token, idx) {
+    var code = token[idx].markup;
+    return '<img title=":'+code+':" alt=":'+code+':" src="'+emojis[code]+'" class="emoji">';
+  };
+});
 
 var MarkdownParser = function() {
-  var markdown = require('markdown-it')(),
-      ipc = require("electron").ipcRenderer;
-  ipc.send('github.emojis');
-  ipc.on('github.emojis', function(emojis) {
-    if (!markdown.renderer.rules.emoji) { markdown.use(require('markdown-it-emoji'));  }
-    markdown.renderer.rules.emoji = function(token, idx) {
-      var code = token[idx].markup;
-      return '<img title=":'+code+':" alt=":'+code+':" src="'+emojis[code]+'" class="emoji">';
-    };
-  });
+  ipcRenderer.send('github.emojis');
 
   this.render = function(text) {
     if (text && text.trim() !== '') {

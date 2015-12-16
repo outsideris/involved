@@ -1,19 +1,21 @@
 'use strict';
 
-var React = require('react');
+var ipcRenderer = require("electron").ipcRenderer,
+    React = require('react');
 
 var store = require('../store')
 
 module.exports = React.createClass({
-  ipc: require("electron").ipcRenderer,
+  componentWillMount: function () {
+    var self = this;
+    ipcRenderer.on('github.me', function(event, profile) {
+      self.props.onLogin(profile);
+    });
+  },
   handleSubmit: function() {
     if (this.state.key.trim()) {
-      var self = this;
-      store.token = this.ipc.sendSync('github.token', this.state.key);
-      this.ipc.send('github.me');
-      this.ipc.on('github.me', function(profile) {
-        self.props.onLogin(profile);
-      });
+      store.token = ipcRenderer.sendSync('github.token', this.state.key);
+      ipcRenderer.send('github.me');
     }
   },
   handleChange: function(event) {

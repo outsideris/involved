@@ -1,6 +1,7 @@
 'use strict';
 
-var React = require('react');
+var ipcRenderer = require("electron").ipcRenderer,
+    React = require('react');
 
 var RepositoryItem = React.createClass({
   handleClick: function() { this.props.onDestroy(this.props.item); },
@@ -19,7 +20,6 @@ var RepositoryItem = React.createClass({
 });
 
 module.exports = React.createClass({
-  ipc: require("electron").ipcRenderer,
   classNames: require('classnames'),
   handleSubmit: function(event) {
     event.preventDefault();
@@ -27,7 +27,7 @@ module.exports = React.createClass({
 
     if (r !== '' && r.match(/[0-9a-zA-Z-]+\/[0-9a-zA-Z-]+/)) {
       var splitedRepo = r.split('/');
-      var repo = this.ipc.sendSync('repo.watch', {owner: splitedRepo[0], repo: splitedRepo[1]});
+      var repo = ipcRenderer.sendSync('repo.watch', {owner: splitedRepo[0], repo: splitedRepo[1]});
       this.setState({ input: '', error: false, watchedRepositories: repo });
     } else {
       this.setState({ input: r, error: true });
@@ -37,7 +37,7 @@ module.exports = React.createClass({
     this.setState({ input: event.target.value });
   },
   handleDestroy: function(item) {
-    this.ipc.sendSync('repo.unwatch', item);
+    ipcRenderer.sendSync('repo.unwatch', item);
 
     var toRemoveIndex;
     var watchedRepo = this.state.watchedRepositories;
@@ -50,7 +50,7 @@ module.exports = React.createClass({
     this.setState({watchedRepositories: watchedRepo});
   },
   getInitialState: function () {
-    return {input: '', error: false, watchedRepositories: this.ipc.sendSync('repo.watch') };
+    return {input: '', error: false, watchedRepositories: ipcRenderer.sendSync('repo.watch') };
   },
   render: function () {
     var formClasses = this.classNames({ 'form': true, 'errored': this.state.error });

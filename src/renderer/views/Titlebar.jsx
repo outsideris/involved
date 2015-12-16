@@ -1,22 +1,22 @@
 'use strict';
 
-var React = require('react');
+var ipcRenderer = require("electron").ipcRenderer,
+    remote = require('electron').remote,
+    React = require('react');
 
 module.exports = React.createClass({
-  ipc: require("electron").ipcRenderer,
-  remote: require('remote'),
   classNames: require('classnames'),
   close: function () {
-    this.remote.getCurrentWindow().close();
+    remote.getCurrentWindow().close();
   },
   minimize: function () {
-    this.remote.getCurrentWindow().minimize();
+    remote.getCurrentWindow().minimize();
   },
   fullscreen: function() {
-    if (this.remote.getCurrentWindow().isMaximized()) {
-      this.remote.getCurrentWindow().unmaximize();
+    if (remote.getCurrentWindow().isMaximized()) {
+      remote.getCurrentWindow().unmaximize();
     } else {
-      this.remote.getCurrentWindow().maximize();
+      remote.getCurrentWindow().maximize();
     }
   },
   handleClick: function() {
@@ -27,6 +27,12 @@ module.exports = React.createClass({
   },
   manageIssue: function(){
     app.changeContentsMode('manage-issue');
+  },
+  componentWillMount: function () {
+    var self = this;
+    ipcRenderer.on('github.me', function(event, profile) {
+      self.setState({user:profile});
+    });
   },
   getInitialState: function() {
     return {user: {}, showModal: this.props.showModal};
@@ -58,11 +64,6 @@ module.exports = React.createClass({
         </div>
       );
     }
-
-    var self = this;
-    this.ipc.on('github.me', function(profile) {
-      self.setState({user:profile});
-    });
 
     return (
       <div>

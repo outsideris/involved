@@ -1,18 +1,17 @@
 'use strict';
 
-var React = require('react');
+var React = require('react'),
+    classNames = require('classnames');
 
 module.exports = React.createClass({
-  ipc: require("electron").ipcRenderer,
-  classNames: require('classnames'),
   selectRepo: function() { this.props.onSelect('repo'); },
   selectIssue: function() { this.props.onSelect('issue'); },
   getInitialState: function() {
     return {data: []};
   },
   render: function () {
-    var repoClasses = this.classNames({ 'a-menu': true, 'active': this.props.mode === 'repo' });
-    var issueClasses = this.classNames({ 'a-menu': true, 'active': this.props.mode === 'issue' });
+    var repoClasses = classNames({ 'a-menu': true, 'active': this.props.mode === 'repo' });
+    var issueClasses = classNames({ 'a-menu': true, 'active': this.props.mode === 'issue' });
 
     return (
       <nav className="menus" id="menu">

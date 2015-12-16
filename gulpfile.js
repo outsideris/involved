@@ -2,7 +2,6 @@ var gulp = require('gulp'),
     jshint = require('gulp-jshint'),
     stylus = require('gulp-stylus'),
     mocha = require('gulp-mocha'),
-    babel = require("gulp-babel"),
     pkg = require('./package.json');
 
 gulp.task('lint', function() {

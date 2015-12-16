@@ -2,8 +2,8 @@
 
 var app = app || {};
 
-
-var React = require('react');
+var ipcRenderer = require("electron").ipcRenderer,
+    React = require('react');
 
 var Signin = require('./views/Signin'),
     Menus = require('./views/Menu'),
@@ -12,7 +12,6 @@ var Signin = require('./views/Signin'),
     ManageIssue = require('./views/ManageIssue');
 
 module.exports = React.createClass({
-  ipc: require("electron").ipcRenderer,
   handleLogin: function(profile) {
     this.setState({user: profile});
   },
@@ -27,13 +26,13 @@ module.exports = React.createClass({
   },
   componentWillMount: function () {
     var self = this;
-    this.ipc.send('github.me');
-    this.ipc.on('github.me', function(profile) {
+    ipcRenderer.send('github.me');
+    ipcRenderer.on('github.me', function(event, profile) {
       self.setState({user: profile});
     });
   },
   getInitialState: function() {
-    app.token = this.ipc.sendSync('github.token');
+    app.token = ipcRenderer.sendSync('github.token');
     return {user: {}};
   },
   render: function () {

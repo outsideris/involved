@@ -1,8 +1,8 @@
 'use strict';
 
 var _ = require('lodash'),
-  Q = require('q'),
-  lowdb = require('lowdb');
+    Q = require('q'),
+    lowdb = require('lowdb');
 
 var github = require('./github');
 

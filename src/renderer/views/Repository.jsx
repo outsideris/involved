@@ -1,20 +1,20 @@
 'use strict';
 
-var React = require('react');
+var ipcRenderer = require("electron").ipcRenderer,
+    React = require('react');
 
 var TimelineList  =  require('./TimelineList'),
     TimelineDetail = require('./TimelineDetail');
 
 module.exports = React.createClass({
-  ipc: require("electron").ipcRenderer,
   lastId: null,
   getInitialState: function() {
     return {data: []};
   },
   componentWillMount: function() {
     var self = this;
-    this.ipc.send('repo.timeline', this.props.since);
-    this.ipc.on('repo.timeline', function(list) {
+    ipcRenderer.send('repo.timeline', this.props.since);
+    ipcRenderer.on('repo.timeline', function(event, list) {
       this.lastId = list[list.length-1].id;
       self.setState({data: list});
     });
