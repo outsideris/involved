@@ -4,6 +4,8 @@ var ipcRenderer = require("electron").ipcRenderer,
     remote = require('electron').remote,
     React = require('react');
 
+var eventer = require('../eventer');
+
 module.exports = React.createClass({
   classNames: require('classnames'),
   close: function () {
@@ -23,10 +25,10 @@ module.exports = React.createClass({
     this.setState({showModal: !this.state.showModal});
   },
   manageRepo: function(){
-    app.changeContentsMode('manage-repo');
+    eventer.contents.emit('mode', 'manage-repo');
   },
   manageIssue: function(){
-    app.changeContentsMode('manage-issue');
+    eventer.contents.emit('mode', 'manage-issue');
   },
   componentWillMount: function () {
     var self = this;

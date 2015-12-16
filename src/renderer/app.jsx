@@ -1,7 +1,5 @@
 'use strict';
 
-var app = app || {};
-
 var ipcRenderer = require("electron").ipcRenderer,
     React = require('react');
 
@@ -9,7 +7,9 @@ var Signin = require('./views/Signin'),
     Menus = require('./views/Menu'),
     Repository = require('./views/Repository'),
     ManageRepository = require('./views/ManageRepository'),
-    ManageIssue = require('./views/ManageIssue');
+    ManageIssue = require('./views/ManageIssue'),
+    eventer = require('./eventer'),
+    store = require('./store');
 
 module.exports = React.createClass({
   handleLogin: function(profile) {
@@ -18,21 +18,18 @@ module.exports = React.createClass({
   handleSelect: function(mode) {
     this.setState({mode: mode});
   },
-  componentDidMount: function() {
-    var self = this;
-    app.changeContentsMode = function(mode) {
-      self.setState({mode: mode})
-    };
-  },
   componentWillMount: function () {
     var self = this;
     ipcRenderer.send('github.me');
     ipcRenderer.on('github.me', function(event, profile) {
       self.setState({user: profile});
     });
+    eventer.contents.on('mode', function(mode) {
+      self.setState({mode: mode});
+    });
   },
   getInitialState: function() {
-    app.token = ipcRenderer.sendSync('github.token');
+    store.token = ipcRenderer.sendSync('github.token');
     return {user: {}};
   },
   render: function () {
