@@ -25,7 +25,7 @@ module.exports = React.createClass({
   render: function () {
     if (this.state.data.length) {
       return (
-        <div className="main-contents flex-container">
+        <div className="main-contents">
           <div id="repository" className="flex-container">
             <TimelineList list={this.state.data} onClick={this.handleClick} />
             <TimelineDetail item={this.state.item} />
@@ -34,7 +34,7 @@ module.exports = React.createClass({
       );
     } else {
       return (
-        <div className="main-contents flex-container">
+        <div className="main-contents">
           <div className="one-half column centered">
             <div className="blankslate body-blank">
               <h3>There is no repository that is tracked.</h3>

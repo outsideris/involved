@@ -49,7 +49,7 @@ module.exports = React.createClass({
         mode = <ManageIssue />
       }
       return (
-        <div className="flex-container flex-container-row">
+        <div className="flex-container">
           <Menus onSelect={this.handleSelect} mode={this.state.mode} />
           {mode}
         </div>
