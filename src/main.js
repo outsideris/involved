@@ -25,7 +25,7 @@ app.on('ready', function() {
     height: 800,
     standardWindow: false,
     resizable: true,
-    frame: false
+    'title-bar-style': 'hidden'
   });
 
   // and load the index.html of the app.
