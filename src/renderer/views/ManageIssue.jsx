@@ -5,7 +5,7 @@ var React = require('react');
 module.exports = React.createClass({
   render: function () {
     return (
-      <div className="one-half column centered">
+      <div className="one-half column centered manage">
         <h1>Manage Issues</h1>
         <div className="flash flash-with-icon">
           <span className="octicon octicon-alert"></span>

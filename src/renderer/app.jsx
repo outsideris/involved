@@ -22,6 +22,7 @@ module.exports = React.createClass({
     var self = this;
     ipcRenderer.send('github.me');
     ipcRenderer.on('github.me', function(event, profile) {
+      store.user = profile;
       self.setState({user: profile});
     });
     eventer.contents.on('mode', function(mode) {

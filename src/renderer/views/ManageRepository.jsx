@@ -74,7 +74,7 @@ module.exports = React.createClass({
     }
 
     return (
-      <div className="one-half column centered">
+      <div className="one-half column centered manage">
         <h1>Manage Repositories</h1>
         <div className="flash flash-with-icon">
           <span className="octicon octicon-alert"></span>
