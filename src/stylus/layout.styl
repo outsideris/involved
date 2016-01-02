@@ -8,6 +8,7 @@ body
   padding 0
   color default-text-color
   font-size default-font-size
+  overflow hidden
 
 #content
   height 100%
@@ -19,7 +20,18 @@ body
   flex none
   width menubar-width
   box-shadow inset 0 0 10px #eee
-  position relative
+  position absolute
+  top 0
+  bottom 0
 
 .main-contents
-  flex-grow 1
+  padding-left menubar-width
+  overflow-y auto
+  height 100%
+
+.acolumn
+  width 50%
+  margin titlebar-height auto
+
+.full-height
+  height 100%

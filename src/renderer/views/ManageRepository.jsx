@@ -74,30 +74,32 @@ module.exports = React.createClass({
     }
 
     return (
-      <div className="one-half column centered manage">
-        <h1>Manage Repositories</h1>
-        <div className="flash flash-with-icon">
-          <span className="octicon octicon-alert"></span>
-          Add repositories that you want to track.
-          You can see their timeline in the timeline menu.
-          <br/>
-          If you want to track https://github.com/atom/electron, enter "atom/electron" in blow.
-        </div>
-        <form className="manage-form" onSubmit={this.handleSubmit}>
-          <dl className={formClasses}>
-            <div className="input-group">
-              <input type="text" placeholder="username/repository" ref="repo" value={this.state.input} onChange={this.handleChange}/>
-              <span className="input-group-button">
-                <button className="btn">
-                  <span className="octicon octicon-plus"></span>
-                </button>
-              </span>
-            </div>
-            <dd className="error">Enter valid "username/repository" form</dd>
-          </dl>
-        </form>
+      <div className="main-contents">
+        <div className="acolumn">
+          <h1>Manage Repositories</h1>
+          <div className="flash flash-with-icon">
+            <span className="octicon octicon-alert"></span>
+            Add repositories that you want to track.
+            You can see their timeline in the timeline menu.
+            <br/>
+            If you want to track https://github.com/atom/electron, enter "atom/electron" in blow.
+          </div>
+          <form className="manage-form" onSubmit={this.handleSubmit}>
+            <dl className={formClasses}>
+              <div className="input-group">
+                <input type="text" placeholder="username/repository" ref="repo" value={this.state.input} onChange={this.handleChange}/>
+                <span className="input-group-button">
+                  <button className="btn">
+                    <span className="octicon octicon-plus"></span>
+                  </button>
+                </span>
+              </div>
+              <dd className="error">Enter valid "username/repository" form</dd>
+            </dl>
+          </form>
 
-        {repositories}
+          {repositories}
+        </div>
       </div>
     );
   }

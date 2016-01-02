@@ -50,7 +50,7 @@ module.exports = React.createClass({
         mode = <ManageIssue />
       }
       return (
-        <div className="flex-container">
+        <div className="full-height">
           <Menus onSelect={this.handleSelect} mode={this.state.mode} />
           {mode}
         </div>
