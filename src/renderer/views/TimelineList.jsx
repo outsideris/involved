@@ -213,7 +213,7 @@ module.exports = React.createClass({
     var events = this.props.list.map(function(event) {
       var T = eventTypes[event.type];
       return (
-        <T data={event} onClick={self.handleClick} />
+        <T key={event.id} data={event} onClick={self.handleClick} />
       );
     });
     return (
