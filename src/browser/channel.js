@@ -12,7 +12,7 @@ ipcMain.on('github.token', function(event, token) {
 ipcMain.on('github.me', function(event) {
   github.me().then(function(d) {
     event.sender.send('github.me', d.body);
-  }).catch(function(e) { console.log(e);});
+  }).catch(function(e) { console.log(e); event.sender.send('github.me', e.message); });
 });
 
 ipcMain.on('github.emojis', function(event) {

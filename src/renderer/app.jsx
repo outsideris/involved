@@ -3,7 +3,8 @@
 var ipcRenderer = require("electron").ipcRenderer,
     React = require('react');
 
-var Signin = require('./views/Signin'),
+var Spinner = require('./views/Spinner'),
+    Signin = require('./views/Signin'),
     Menus = require('./views/Menu'),
     Repository = require('./views/Repository'),
     ManageRepository = require('./views/ManageRepository'),
@@ -22,8 +23,12 @@ module.exports = React.createClass({
     var self = this;
     ipcRenderer.send('github.me');
     ipcRenderer.on('github.me', function(event, profile) {
-      store.user = profile;
-      self.setState({user: profile});
+      if (profile === 'Token Required') {
+        self.setState({loading: false});
+      } else if (profile) {
+        store.user = profile;
+        self.setState({user: profile, loading: false});
+      }
     });
     eventer.contents.on('mode', function(mode) {
       self.setState({mode: mode});
@@ -31,10 +36,14 @@ module.exports = React.createClass({
   },
   getInitialState: function() {
     store.token = ipcRenderer.sendSync('github.token');
-    return {user: {}};
+    return {user: {}, loading: true};
   },
   render: function () {
-    if (!this.state.user.login) {
+    if (this.state.loading) {
+      return (
+        <Spinner/>
+      );
+    } else if (!this.state.user.login) {
       return (
         <Signin onLogin={this.handleLogin} showModal={false} />
       );

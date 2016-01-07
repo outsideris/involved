@@ -10,7 +10,10 @@ module.exports = (function() {
     return 'https://api.github.com' + path;
   };
 
-  var baseRequest = function() { console.log('The github token is absent.'); };
+  var baseRequest = function(options, cb) {
+    console.log('The github token is absent.');
+    cb(new Error('Token Required'));
+  };
   var setBaseRequest = function() {
     baseRequest = request.defaults({
       // user-agent required
@@ -25,7 +28,7 @@ module.exports = (function() {
   var req = function(options) {
     var deferred = Q.defer();
     baseRequest(options, function(err, res, body) {
-      if (err) { return deferred.reject(); }
+      if (err) { return deferred.reject(err); }
       try {
         if (res.statusCode !== 200) { return deferred.reject(JSON.parse(body));}
         deferred.resolve({
