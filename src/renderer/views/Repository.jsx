@@ -3,27 +3,36 @@
 var ipcRenderer = require("electron").ipcRenderer,
     React = require('react');
 
-var TimelineList  =  require('./TimelineList'),
+var Spinner = require('./Spinner'),
+    TimelineList  =  require('./TimelineList'),
     TimelineDetail = require('./TimelineDetail');
 
 module.exports = React.createClass({
   lastId: null,
   getInitialState: function() {
-    return {data: []};
+    return {data: [], loading: true};
   },
   componentWillMount: function() {
     var self = this;
     ipcRenderer.send('repo.timeline', this.props.since);
     ipcRenderer.on('repo.timeline', function(event, list) {
       this.lastId = list[list.length-1].id;
-      self.setState({data: list});
+      self.setState({data: list, loading: false});
     });
   },
   handleClick: function(comp) {
     this.setState({item: comp.props.data});
   },
   render: function () {
-    if (this.state.data.length) {
+    if (this.state.loading) {
+      return (
+        <div className="main-contents">
+          <div id="repository" className="flex-container">
+            <Spinner/>
+          </div>
+        </div>
+      );
+    } else if (this.state.data.length) {
       return (
         <div className="main-contents">
           <div id="repository" className="flex-container">

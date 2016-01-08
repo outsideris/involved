@@ -13,8 +13,8 @@ var Spinner = require('./views/Spinner'),
     store = require('./store');
 
 module.exports = React.createClass({
-  handleLogin: function(profile) {
-    this.setState({user: profile});
+  processLogin: function() {
+    this.setState({loading:true});
   },
   handleSelect: function(mode) {
     this.setState({mode: mode});
@@ -45,7 +45,7 @@ module.exports = React.createClass({
       );
     } else if (!this.state.user.login) {
       return (
-        <Signin onLogin={this.handleLogin} showModal={false} />
+        <Signin processLogin={this.processLogin} showModal={false} />
       );
     } else {
       var mode;

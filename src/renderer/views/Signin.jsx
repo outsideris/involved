@@ -6,16 +6,12 @@ var ipcRenderer = require("electron").ipcRenderer,
 var store = require('../store')
 
 module.exports = React.createClass({
-  componentWillMount: function () {
-    var self = this;
-    ipcRenderer.on('github.me', function(event, profile) {
-      self.props.onLogin(profile);
-    });
-  },
   handleSubmit: function() {
     if (this.state.key.trim()) {
+      this.setState({disable: true});
       store.token = ipcRenderer.sendSync('github.token', this.state.key);
       ipcRenderer.send('github.me');
+      this.props.processLogin();
     }
   },
   handleChange: function(event) {
@@ -24,7 +20,7 @@ module.exports = React.createClass({
     });
   },
   getInitialState: function () {
-    return {key: ''};
+    return {key: '', disable: false};
   },
   render: function () {
     return (
@@ -46,6 +42,7 @@ module.exports = React.createClass({
             <button
               type="button"
               className="btn btn-primary"
+              disabled={this.state.disable}
               onClick={this.handleSubmit}
             >Save</button>
           </div>
