@@ -1,6 +1,6 @@
 'use strict';
 
-require("babel-register");
+require('babel-register');
 
 window.$ = window.jQuery = require('jquery');
 window.moment = require('moment');

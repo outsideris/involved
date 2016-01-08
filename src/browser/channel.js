@@ -1,6 +1,6 @@
 'use strict';
 
-var ipcMain = require("electron").ipcMain;
+var ipcMain = require('electron').ipcMain;
 
 var github = require('./github'),
     repo = require('./repository');
