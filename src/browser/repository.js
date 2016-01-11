@@ -1,34 +1,47 @@
 'use strict';
 
 var _ = require('lodash'),
-    Q = require('q'),
-    lowdb = require('lowdb');
+    Q = require('q');
 
-var github = require('./github');
-
-var db = lowdb('db.json'),
-    repoDB = db('repos'),
-    repoEventDB = db('timeline');
+var github = require('./github'),
+    db = require('./store');
 
 module.exports = (function() {
   return {
-    repoEventDB: repoEventDB,
-    watch: function(p) {
-      if (p && p.owner && p.repo && !repoDB.find({owner: p.owner, repo:p.repo})) {
-        repoDB.push(p);
+    watch: function(p, cb) {
+      if (p && p.repo) {
+        p.type = 'repo';
+        db.watch.insert(p, function(err, newDoc) {
+          if (err) { return cb(err); }
+          db.watch.find({type: 'repo'}, function(err, docs) {
+            cb(err, docs);
+          });
+        });
+      } else {
+        db.watch.find({type: 'repo'}, function(err, docs) {
+          cb(err, docs);
+        });
       }
-      return repoDB.chain().where({}).value();
     },
-    unwatch: function(p) {
-      if (p && p.owner && p.repo) {
-        repoDB.remove(p);
-        repoEventDB.remove({repo: {name: p.owner+'/'+p.repo}});
+    unwatch: function(p, cb) {
+      if (p && p.repo) {
+        db.watch.remove(p, function(err, numRemoved) {
+          if (err) { return cb(err); }
+          db.repos.remove({repo: {name: p.repo}}, function(err, numRemoved) {
+            if (err) { return cb(err); }
+            db.watch.find({type: 'repo'}, function(err, docs) {
+              cb(err, docs);
+            });
+          });
+        });
       }
-      return repoDB.chain().where({}).value();
     },
-    unwatchAll: function() {
-      repoDB.remove();
-      repoEventDB.remove();
+    unwatchAll: function(cb) {
+      db.watch.remove({}, {multi: true}, function(err, num) {
+        db.repos.remove({}, {multi: true}, function(err, num) {
+          cb(err)
+        });
+      });
     },
     timeline: function(sinceId) {
       var projects = repoDB.chain().where({}).value();

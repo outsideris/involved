@@ -1,12 +1,10 @@
-require('./ipc-mock')()
-
 fs = require 'fs'
 github = require '../src/browser/github'
 should = require 'should'
 
 tokenFixture = fs.readFileSync('./spec/.token').toString()
 
-describe.only 'Github API', ->
+describe 'Github API', ->
   beforeEach ->
     github.token tokenFixture
 

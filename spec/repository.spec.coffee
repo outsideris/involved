@@ -1,6 +1,5 @@
-require('./ipc-mock')()
-
 fs = require 'fs'
+db = require '../src/browser/store'
 repo = require '../src/browser/repository'
 github = require '../src/browser/github'
 should = require 'should'
@@ -10,47 +9,66 @@ describe 'Repository', ->
   before ->
     github.token fs.readFileSync('./spec/.token').toString()
 
-  after ->
-    repo.unwatchAll()
+  after (done) ->
+    db.watch.remove {}, {multi: true}, (err, num) ->
+      done err
 
   describe "watch", ->
-    beforeEach ->
-      repo.unwatchAll()
+    beforeEach (done) ->
+      db.watch.remove {}, {multi: true}, (err, num) ->
+        done err
 
-    it "should add a project I watched", ->
-      p = {owner: 'nodejs', repo: 'node'}
-      result = repo.watch p
-      result.length.should.be.equal 1
-      result[0].owner.should.be.equal p.owner
-    it "should add two project I watched", ->
-      repo.watch {owner: 'nodejs', repo: 'node'}
-      result = repo.watch {owner: 'Automattic', repo: 'socket.io'}
-      result.length.should.be.equal 2
-    it "should not add a project that already exist", ->
-      repo.watch {owner: 'nodejs', repo: 'node'}
-      result = repo.watch {owner: 'nodejs', repo: 'node'}
-      result.length.should.be.equal 1
+    it "should add a project I watched", (done) ->
+      p = {repo: 'nodejs/node'}
+      repo.watch p, (err, list) ->
+        return done err if err
+        list.length.should.be.equal 1
+        list[0].repo.should.be.equal p.repo
+        done()
+    it "should add two project I watched", (done) ->
+      repo.watch {repo: 'nodejs/node'}, (err, list) ->
+        return done err if err
+        repo.watch {repo: 'Automattic/socket.io'}, (err, list) ->
+          return done err if err
+          list.length.should.be.equal 2
+          done()
+    it "should not add a project that already exist", (done) ->
+      repo.watch {repo: 'nodejs/node'}, (err, list) ->
+        return done err if err
+        list.length.should.be.equal 1
+        repo.watch {repo: 'nodejs/node'}, (err, list) ->
+          err.errorType.should.be.equal 'uniqueViolated'
+          done()
 
   describe "unwatch", ->
-    beforeEach ->
-      repo.unwatchAll()
+    beforeEach (done) ->
+      db.watch.remove {}, {multi: true}, (err, num) ->
+        done err
 
-    it "should remove a project I want to unwatch", ->
-      p = {owner: 'nodejs', repo: 'node'}
-      result = repo.watch p
-      result.length.should.be.equal 1
+    it "should remove a project I want to unwatch", (done) ->
+      p = {repo: 'nodejs/node'}
+      repo.watch p, (err, list) ->
+        return done err if err
+        list.length.should.be.equal 1
 
-      result = repo.unwatch p
-      result.length.should.be.equal 0
+        repo.unwatch p, (err, list) ->
+          return done err if err
+          list.length.should.be.equal 0
+          done()
 
-    it "should remove the project among multiple projects", ->
-      repo.watch {owner: 'nodejs', repo: 'node'}
-      repo.watch {owner: 'summernote', repo: 'summernote'}
-      result = repo.watch {owner: 'facebook', repo: 'react'}
-      result.length.should.be.equal 3
+    it "should remove the project among multiple projects", (done) ->
+      repo.watch {repo: 'nodejs/node'}, (err, list) ->
+        return done err if err
+        repo.watch {repo: 'summernote/summernote'}, (err, list) ->
+          return done err if err
+          repo.watch {repo: 'facebook/react'}, (err, list) ->
+            return done err if err
+            list.length.should.be.equal 3
 
-      result = repo.unwatch {owner: 'summernote', repo: 'summernote'}
-      result.length.should.be.equal 2
+            repo.unwatch {repo: 'summernote/summernote'}, (err, list) ->
+              return done err if err
+              list.length.should.be.equal 2
+              done()
 
     it "should remove timeline of the project unwatched", (done) ->
       repo.watch {owner: 'nodejs', repo: 'node'}
