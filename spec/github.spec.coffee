@@ -1,8 +1,17 @@
 fs = require 'fs'
-github = require '../src/browser/github'
 should = require 'should'
+rewire = require 'rewire'
+Q = require 'q'
+
+github = rewire '../src/browser/github'
+
+fixtureGithubRepoEventPage1 = require './fixture/github-api-repos-events-node-page1.json'
+fixtureGithubRepoEventPage2 = require './fixture/github-api-repos-events-node-page2.json'
+fixtureGithubRepoEventPage1new = require './fixture/github-api-repos-events-node-page1-new.json'
 
 tokenFixture = fs.readFileSync('./spec/.token').toString()
+
+enableGithubMock = true
 
 describe 'Github API', ->
   beforeEach ->
@@ -33,18 +42,51 @@ describe 'Github API', ->
       .catch done
 
   describe "repoEvents", ->
-    it "should return repository info", (done) ->
-      github.repoEvents('jquery', 'jquery').then (d) ->
-        (d.body.length > 0).should.be.ok
-        d.body[0].should.have.property 'type'
-        done()
-      .catch done
+    rollbackReq = null
+    originalReq = github.__get__ 'req'
 
-    it "should return events", (done) ->
-      github.repoEvents('jquery', 'jquery').then (d) ->
-        d.body.length.should.be.equal github.pageSize
-        done()
-      .catch done
+    beforeEach ->
+      (rollbackReq = github.__set__ 'req', ->
+        deferred = Q.defer()
+        setTimeout (->
+          deferred.resolve fixtureGithubRepoEventPage1
+        ), 300
+        deferred.promise) if enableGithubMock
+    afterEach ->
+      rollbackReq = null
+    after ->
+      github.__set__ 'req', originalReq
+
+    it "should return events of the repository", ->
+      github.repoEvents('nodejs/node').then (d) ->
+        d.body.length.should.equal github.pageSize
+        d.body[0].should.have.property 'type'
+        d.body[0].should.have.property 'payload'
+
+    it "should return next page for events of the repository", ->
+      (rollbackReq = github.__set__ 'req', ->
+        deferred = Q.defer()
+        setTimeout (->
+          deferred.resolve fixtureGithubRepoEventPage2
+        ), 300
+        deferred.promise) if enableGithubMock
+
+      github.repoEvents('nodejs/node', 2).then (d) ->
+        d.body.length.should.equal github.pageSize
+        d.body[0].should.have.property 'type'
+        d.body[0].should.have.property 'payload'
+
+    it "should return polling interval in headers", ->
+      github.repoEvents('nodejs/node').then (d) ->
+        d.res.headers['x-poll-interval'].should.equal '60'
+
+    it "should return ratelimit in headers", ->
+      github.repoEvents('nodejs/node').then (d) ->
+        (+d.res.headers['x-ratelimit-remaining']).should.above 100
+
+    it "should return ratelimit reset time in headers", ->
+      github.repoEvents('nodejs/node').then (d) ->
+        (+d.res.headers['x-ratelimit-reset'] * 1000).should.above 1451606400000 # 2016-01-01
 
   describe "emojis", ->
     it "should return emoji list", (done) ->
