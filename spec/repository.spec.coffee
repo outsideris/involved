@@ -5,7 +5,6 @@ github = require '../src/browser/github'
 should = require 'should'
 
 describe 'Repository', ->
-  timelineSize = github.pageSize / 4
   before ->
     github.token fs.readFileSync('./spec/.token').toString()
 
@@ -71,51 +70,81 @@ describe 'Repository', ->
               done()
 
     it "should remove timeline of the project unwatched", (done) ->
-      repo.watch {owner: 'nodejs', repo: 'node'}
-      repo.watch {owner: 'summernote', repo: 'summernote'}
-      repo.events().then () ->
-        nodeEvents = repo.repoEventDB.chain().where({repo: {name: 'nodejs/node'}}).value()
-        snEvents = repo.repoEventDB.chain().where({repo: {name: 'summernote/summernote'}}).value()
-        nodeEvents.length.should.be.above(0)
-        snEvents.length.should.be.above(0)
+      repo.watch {repo: 'atom/electron'}, (err, docs) ->
+        repo.makeTimeline null, ->
+          db.repos.find {'repo.name':'atom/electron'}, (err, docs) ->
+            docs.length.should.above 0
+            repo.unwatch {repo: 'atom/electron'}, (err, docs) ->
+              db.watch.find {repo:'atom/electron'}, (err, docs) ->
+                docs.should.have.length 0
+                db.repos.find {'repo.name':'atom/electron'}, (err, docs) ->
+                  docs.should.have.length 0
+                  done()
 
-        repo.unwatch {owner: 'summernote', repo: 'summernote'}
-        nodeEvents = repo.repoEventDB.chain().where({repo: {name: 'nodejs/node'}}).value()
-        snEvents = repo.repoEventDB.chain().where({repo: {name: 'summernote/summernote'}}).value()
-        nodeEvents.length.should.be.above(0)
-        snEvents.should.have.length(0)
-        done()
-      .catch(done)
+  describe "fetchEventsAndSave", ->
+    beforeEach (done) ->
+      db.watch.remove {}, {multi: true}, (err, num) ->
+        done err if err
+        db.watch.insert {repo:'atom/electron', type:'repo'}, (err, docs) ->
+          done err if err
+          db.repos.remove {}, {multi: true}, (err, num) ->
+            done err
 
-  describe "timeline", ->
-    beforeEach ->
-      repo.repoEventDB.remove()
-      repo.unwatchAll()
-      repo.watch {owner: 'nodejs', repo: 'node'}
-      repo.watch {owner: 'jquery', repo: 'jquery'}
+    it "should events of the repo and save it", (done)->
+      repo.fetchEventsAndSave 'atom/electron', false, (err, docs) ->
+        db.repos.find {}, (err, docs) ->
+          docs.length.should.above(repo.timelineSize)
+          done()
 
-    it "should return timeline watched", ->
-      repo.timeline().then (list) ->
-        list.length.should.be.equal(timelineSize)
+    it "should keep current page number", (done)->
+      repo.fetchEventsAndSave 'atom/electron', false, (err, docs) ->
+        db.watch.find {repo:'atom/electron', type:'repo'}, (err, docs) ->
+          docs[0].page.should.equal 1
+          done()
 
-    it "should return timeline since id", ->
-      repo.timeline().then (list) ->
-        list[0].isOld = true
-        repo.timeline(list[timelineSize-1].id).then (list) ->
-          list.length.should.be.equal(timelineSize)
-          list[0].should.not.have.property('isOld');
+    it "should not save duplicated events", (done)->
+      repo.fetchEventsAndSave 'atom/electron', false, (err, docs) ->
+        db.repos.find {'repo.name':'atom/electron'}, (err, docs) ->
+          oldSize = docs.length
+          db.watch.update {repo: 'atom/electron', type:'repo'}, {$set: {page: 0}}, (err, numReplaced) ->
+            repo.fetchEventsAndSave 'atom/electron', false, (err, docs) ->
+              db.repos.find {'repo.name':'atom/electron'}, (err, docs) ->
+                docs.should.have.length oldSize
+                done()
 
-    it "should return next timeline since id", ->
-      repo.timeline().then (list) ->
-        list[0].isOld = true
-        repo.timeline(list[timelineSize-1].id).then (list) ->
-          repo.timeline(list[timelineSize-1].id).then (list) ->
-            repo.timeline(list[timelineSize-1].id).then (list) ->
-              list.length.should.be.equal(timelineSize)
-              list[0].should.not.have.property('isOld');
+    it "should fetch newest events if isNew flag is true", (done)->
+      repo.fetchEventsAndSave 'atom/electron', false, (err, docs) ->
+        db.repos.find {'repo.name':'atom/electron'}, (err, docs) ->
+          oldSize = docs.length
+          repo.fetchEventsAndSave 'atom/electron', true, (err, docs) ->
+            db.repos.find {'repo.name':'atom/electron'}, (err, docs) ->
+              docs.should.have.length oldSize
+              done()
 
-    it "should return new timeline when sinceId is not passed", ->
-      repo.timeline().then (list) ->
-        list[0].isOld = true
-        repo.timeline().then (list) ->
-          list[0].should.not.have.property('isOld');
+  describe "makeTimeline", ->
+    beforeEach (done) ->
+      db.watch.remove {}, {multi: true}, (err, num) ->
+        done err if err
+        db.repos.remove {}, {multi: true}, (err, num) ->
+          done err if err
+          db.watch.insert [{repo:'nodejs/node', type:'repo'}, {repo:'atom/electron', type:'repo'}], (err, docs) ->
+            done err
+
+    it "should save events of repositories that watched", (done) ->
+      repo.makeTimeline null, ->
+        db.repos.find {'repo.name':'nodejs/node'}, (err, docs) ->
+          done err if err
+          docs.length.should.above repo.timelineSize
+          db.repos.find {'repo.name':'atom/electron'}, (err, docs) ->
+            docs.length.should.above repo.timelineSize
+            done err
+
+    it "should not fetch if events already are exist enough", (done) ->
+      repo.makeTimeline null, ->
+        db.repos.find {'repo.name':'nodejs/node'}, (err, docs) ->
+          done err if err
+          oldSize = docs.length
+          repo.makeTimeline null, ->
+            db.repos.find {'repo.name':'nodejs/node'}, (err, docs) ->
+              docs.should.have.length oldSize
+              done err

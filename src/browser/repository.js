@@ -6,8 +6,9 @@ var _ = require('lodash'),
 var github = require('./github'),
     db = require('./store');
 
-module.exports = (function() {
+var Repo = module.exports = (function() {
   return {
+    timelineSize: github.pageSize / 4,
     watch: function(p, cb) {
       if (p && p.repo) {
         p.type = 'repo';
@@ -25,9 +26,9 @@ module.exports = (function() {
     },
     unwatch: function(p, cb) {
       if (p && p.repo) {
-        db.watch.remove(p, function(err, numRemoved) {
+        db.watch.remove({repo:p.repo, type:'repo'}, function(err, numRemoved) {
           if (err) { return cb(err); }
-          db.repos.remove({repo: {name: p.repo}}, function(err, numRemoved) {
+          db.repos.remove({'repo.name': p.repo}, {multi:true}, function(err, numRemoved) {
             if (err) { return cb(err); }
             db.watch.find({type: 'repo'}, function(err, docs) {
               cb(err, docs);
@@ -43,41 +44,42 @@ module.exports = (function() {
         });
       });
     },
-    timeline: function(sinceId) {
-      var projects = repoDB.chain().where({}).value();
-
-      var promises;
-      if (!sinceId) {
-        repoEventDB.remove();
-        promises = _.chain(projects).map(function(p) {
-          p.nextPage = 1;
-          return github.repoEvents(p.owner, p.repo, p.nextPage);
-        }).value();
-      } else {
-        promises = _.chain(projects).filter(function(p) {
-          return repoEventDB.chain().where({repo: {name: p.owner+'/'+p.repo}})
-              .filter(function(o) { return o.id<sinceId; }).value().length < github.pageSize/4;
-        }).map(function(p) {
-          return github.repoEvents(p.owner, p.repo, p.nextPage);
-        }).value();
-      }
-
-      return Q.all(promises)
-        .then(function(result) {
-          result.forEach(function(data) {
-            data.body.forEach(function(evt) {
-              if (evt.type !== 'ForkEvent' && evt.type !== 'WatchEvent' && evt.type !== 'GollumEvent') {
-                repoEventDB.push(evt);
-              }
+    fetchEventsAndSave: function(repo, isNew, cb) {
+      db.watch.findOne({repo:repo, type:'repo'}, function(err, doc) {
+        var page = ++doc.page || 1;
+        if (isNew) { page = 1 }
+        github.repoEvents(repo, page).then(function(data) {
+          data.body = _.filter(data.body, function(d) {
+            return d.type !== 'ForkEvent' && d.type !== 'WatchEvent' && d.type !== 'GollumEvent'
+          })
+          db.repos.insert(data.body, function(err, docs) {
+            db.watch.update({repo: repo, type:'repo'}, {$set: {page: page}}, function(err, numReplaced) {
+              cb(err, docs);
             });
           });
-          projects.forEach(function(p) {
-            p.nextPage = (p.nextPage || 1) + 1;
+        }).catch(cb);
+      });
+    },
+    makeTimeline: function(sinceId, cb) {
+      db.watch.find({type:'repo'}, function(err, watchedRepos) {
+        if (err) { return cb(err); }
+        var doneCount = 0;
+        var done = function(err, docs) {
+          ++doneCount;
+          if (doneCount > watchedRepos.length-1) {
+            cb();
+          }
+        };
+
+        sinceId = sinceId || '99999999999';
+        _.each(watchedRepos, function(r) {
+          db.repos.find({id: {$lt: sinceId+''}, 'repo.name': r.repo}, function(err, docs) {
+            if (docs.length <= Repo.timelineSize) {
+              Repo.fetchEventsAndSave(r.repo, false, done);
+            } else {done()}
           });
-        }).then(function() {
-          return repoEventDB.chain().filter(function(o) { return o.id<(sinceId || Infinity); })
-            .sortBy('created_at').reverse().take(github.pageSize/4).value();
         });
+      });
     }
   };
 })();

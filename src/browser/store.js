@@ -8,7 +8,10 @@ var Datastore = require('nedb'),
 
 watch.ensureIndex({ fieldName: 'repo', unique: true }, function (err) {
   if (err) { console.error(err); }
-  console.log('indexed');
+});
+
+repos.ensureIndex({ fieldName: 'id', unique: true }, function (err) {
+  if (err) { console.error(err); }
 });
 
 module.exports = {

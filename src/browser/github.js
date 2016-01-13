@@ -40,7 +40,7 @@ var req = function(options) {
 };
 
 module.exports = {
-  pageSize: 60,
+  pageSize: 100,
   token: function(t) {
     if (typeof t === 'string') {
       TOKEN = t;
