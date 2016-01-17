@@ -80,6 +80,29 @@ var Repo = module.exports = (function() {
           });
         });
       });
+    },
+    getTimeline: function(sinceId, isNew, cb) {
+      var self = this;
+      sinceId = sinceId || '99999999999';
+      db.repos.count({id: {$lt: sinceId+''}}, function(err, count) {
+        if (err) { return cb(err); }
+
+        if (count >= self.timelineSize) {
+          db.repos.find({id: {$lt: sinceId+''}}).sort({ id: -1 }).limit(self.timelineSize).exec(function(err, docs) {
+            cb(err, docs);
+            var lastId = docs[docs.length-1].id;
+            Repo.makeTimeline(lastId, function() {});
+          });
+        } else {
+          Repo.makeTimeline(sinceId, function() {
+            db.repos.find({id: {$lt: sinceId+''}}).sort({ id: -1 }).limit(self.timelineSize).exec(function(err, docs) {
+              cb(err, docs);
+              var lastId = docs[docs.length-1].id;
+              Repo.makeTimeline(lastId, function() {});
+            });
+          });
+        }
+      });
     }
   };
 })();

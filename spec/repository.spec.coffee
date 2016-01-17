@@ -4,6 +4,10 @@ repo = require '../src/browser/repository'
 github = require '../src/browser/github'
 should = require 'should'
 
+fixtureGithubElectronEventPage1 = require './fixture/github-api-repos-events-electron-page1.json'
+fixtureGithubElectronEventPage2 = require './fixture/github-api-repos-events-electron-page2.json'
+fixtureGithubElectronEventPage1new = require './fixture/github-api-repos-events-electron-page1-new.json'
+
 describe 'Repository', ->
   before ->
     github.token fs.readFileSync('./spec/.token').toString()
@@ -148,3 +152,32 @@ describe 'Repository', ->
             db.repos.find {'repo.name':'nodejs/node'}, (err, docs) ->
               docs.should.have.length oldSize
               done err
+
+  describe "getTimeline", ->
+    beforeEach (done) ->
+      db.watch.remove {}, {multi: true}, (err, num) ->
+        done err if err
+        db.repos.remove {}, {multi: true}, (err, num) ->
+          done err if err
+          db.watch.insert [{repo:'nodejs/node', type:'repo'}, {repo:'atom/electron', type:'repo'}], (err, docs) ->
+            done err
+
+    it "should return timeline if fetched data is empty", (done) ->
+      repo.getTimeline null, null, (err, docs) ->
+        docs.should.have.length repo.timelineSize
+        done()
+
+    it "should return timeline from already fetchd data", (done) ->
+      db.repos.insert fixtureGithubElectronEventPage1.body, (err, docs) ->
+        before = (new Date()).getTime()
+        repo.getTimeline null, null, (err, docs) ->
+          after = (new Date()).getTime()
+          docs.should.have.length repo.timelineSize
+          timeDiff = after - before
+          timeDiff.should.below 100
+          done()
+
+    it "should return timeline if fetched data is empty", (done) ->
+      repo.getTimeline null, null, (err, docs) ->
+        docs.should.have.length repo.timelineSize
+        done()
